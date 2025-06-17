@@ -7,6 +7,31 @@ let prepTimer;
 let prepTimeLeft = 300;
 let isPrepRunning = false;
 
+// ====== USER SETUP ======
+let userRole = '';
+let userLevel = '';
+
+const timePresets = {
+  middle: {
+    speechTimes: {
+      '1AC': 300, '1NC': 300, '2AC': 300, '2NC': 300,
+      '1NR': 180, '1AR': 180, '2NR': 180, '2AR': 180,
+      'CX1': 180, 'CX2': 180, 'CX3': 180, 'CX4': 180
+    },
+    prepTime: 300
+  },
+  high: {
+    speechTimes: {
+      '1AC': 480, '1NC': 480, '2AC': 480, '2NC': 480,
+      '1NR': 300, '1AR': 300, '2NR': 300, '2AR': 300,
+      'CX1': 180, 'CX2': 180, 'CX3': 180, 'CX4': 180
+    },
+    prepTime: 300
+  }
+};
+
+let speechTimes = {};
+
 // ====== DOM ELEMENTS ======
 const mainTimer = document.getElementById('main-timer');
 const speechProgress = document.getElementById('speech-progress');
@@ -104,45 +129,48 @@ function showPrepUsedToast(message) {
 
 // ====== RESPONSIBILITIES CONTENT ======
 const speechResponsibilities = {
-  '1AC': ['Read pre-written case', 'Speak clearly and confidently', 'Frame the round for the judge'],
-  'CX1': ['Ask questions to clarify the 1AC case', 'Expose contradictions', 'Work with partner'],
-  '1NC': ['Respond to 1AC with off-case', 'Introduce disadvantages', 'Start kritik if needed'],
-  'CX2': ['Cross-ex 1NC', 'Clarify arguments'],
-  '2AC': ['Respond to 1NC', 'Rebuild 1AC', 'Extend key arguments'],
-  'CX3': ['Clarify 2AC', 'Highlight 1NC weaknesses'],
-  '2NC': ['Extend off-case', 'Collapse arguments', 'Pre-empt 1AR'],
-  'CX4': ['Cross-ex 2NC', 'Set up 1AR'],
-  '1NR': ['Defend 2NC', 'Refute 2AC'],
-  '1AR': ['Respond to 2NC/1NR', 'Collapse to winning arguments'],
-  '2NR': ['Extend 1 or 2 key arguments', 'Respond to 1AR'],
-  '2AR': ['Final rebuttal', 'Weigh impacts', 'Tell a clear story']
+  // Examples only — you'll want to expand this based on your spreadsheet
+  '1AC': ['Read pre-written case', 'Speak clearly and confidently', 'Frame the round'],
+  '1A_1NC': ['Flow the 1NC', 'Prep for 2AC', 'Work with your partner'],
+  'Judge_1AC': ['Listen for clarity and organization', 'Note plan structure'],
+  'Judge_2AC': ['Assess how well arguments are extended or refuted']
 };
 
+// ====== RESPONSIBILITIES FUNCTION ======
 function updateResponsibilities(speechLabel) {
   const listEl = document.getElementById('responsibilities-list');
   listEl.innerHTML = '';
-  const responsibilities = speechResponsibilities[speechLabel];
 
-  if (responsibilities && responsibilities.length > 0) {
-    responsibilities.forEach(item => {
+  if (userRole === 'Judge') {
+    const neutral = speechResponsibilities[`Judge_${speechLabel}`] || ['Observe arguments and evaluate clarity, logic, and evidence.'];
+    neutral.forEach(item => {
       const li = document.createElement('li');
       li.textContent = item;
       listEl.appendChild(li);
     });
-  } else {
-    const li = document.createElement('li');
-    li.textContent = 'No responsibilities found for this speech.';
-    listEl.appendChild(li);
+    return;
   }
+
+  const speakerMap = {
+    '1A': ['1AC', 'CX1', '2AC', 'CX3', '1AR', '2AR'],
+    '2A': ['CX1', '2AC', 'CX3', '1AR', '2AR'],
+    '1N': ['1NC', 'CX2', '2NC', 'CX4', '1NR', '2NR'],
+    '2N': ['CX2', '2NC', 'CX4', '1NR', '2NR']
+  };
+
+  const isMySpeech = speakerMap[userRole]?.includes(speechLabel);
+  const roleKey = isMySpeech ? speechLabel : `${userRole}_${speechLabel}`;
+
+  const responsibilities = speechResponsibilities[roleKey] || [`Be sure to flow and prepare responses to ${speechLabel}.`];
+
+  responsibilities.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = item;
+    listEl.appendChild(li);
+  });
 }
 
 // ====== SPEECH BUTTONS LOGIC ======
-const speechTimes = {
-  '1AC': 300, 'CX1': 180, '1NC': 300, 'CX2': 180,
-  '2AC': 300, 'CX3': 180, '2NC': 300, 'CX4': 180,
-  '1NR': 180, '1AR': 180, '2NR': 180, '2AR': 180
-};
-
 document.querySelectorAll('.grid button').forEach(button => {
   button.addEventListener('click', () => {
     const label = button.textContent.split(' ')[0];
@@ -186,19 +214,14 @@ speechProgress.addEventListener('input', (e) => {
 });
 
 startPrepBtn.addEventListener('click', () => {
-  // If prep is not running and speech is currently running
   if (!isPrepRunning && isSpeechRunning) {
     const confirmStartPrep = window.confirm("A speech is currently being timed. Are you sure you want to use prep time now?");
     if (!confirmStartPrep) return;
-
-    // ✅ Pause speech timer only after confirmation
     pauseSpeechTimer();
   }
 
-  // Toggle prep timer
   isPrepRunning ? pausePrepTimer() : startPrepTimer();
 });
-
 
 resetPrepBtn.addEventListener('click', () => {
   pausePrepTimer();
@@ -226,6 +249,20 @@ document.addEventListener('click', (event) => {
   if (!clickedInside && !clickedToggle) {
     responsibilitiesPanel.classList.add('translate-x-full');
   }
+});
+
+// ====== ROLE SELECTION SETUP MODAL ======
+document.getElementById('setup-confirm').addEventListener('click', () => {
+  userRole = document.getElementById('role-select').value;
+  userLevel = document.getElementById('level-select').value;
+
+  speechTimes = timePresets[userLevel].speechTimes;
+  prepTimeLeft = timePresets[userLevel].prepTime;
+
+  document.getElementById('setup-modal').style.display = 'none';
+
+  updateSpeechDisplay();
+  updatePrepDisplay();
 });
 
 // ====== INIT ======
