@@ -79,6 +79,35 @@
     </ul>
   </div>
 
+  <!-- 🌟 Role & Level Setup Modal -->
+  <div id="setup-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+    <div class="bg-gray-800 p-6 rounded shadow-lg text-white w-11/12 max-w-md space-y-4">
+      <h2 class="text-xl font-bold">Welcome! Set Your Role</h2>
+      
+      <label class="block">Select Your Role:
+        <select id="role-select" class="w-full mt-1 p-2 rounded text-black">
+          <option value="1A">1st Affirmative</option>
+          <option value="2A">2nd Affirmative</option>
+          <option value="1N">1st Negative</option>
+          <option value="2N">2nd Negative</option>
+          <option value="Judge">Judge</option>
+        </select>
+      </label>
+
+      <label class="block">Select Your Division:
+        <select id="level-select" class="w-full mt-1 p-2 rounded text-black">
+          <option value="middle">Middle School</option>
+          <option value="high">High School</option>
+        </select>
+      </label>
+
+      <button id="setup-confirm"
+              class="bg-green-600 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-white w-full">
+        Start Debate Timer
+      </button>
+    </div>
+  </div>
+
   <!-- 👨‍💻 Main Script -->
   <script src="script.js"></script>
 </body>
