@@ -189,8 +189,10 @@ startPrepBtn.addEventListener('click', () => {
   if (!isPrepRunning && isSpeechRunning) {
     const confirmStartPrep = window.confirm("A speech is currently being timed. Are you sure you want to use prep time now?");
     if (!confirmStartPrep) return;
-    pauseSpeechTimer(); // ✅ Pause speech if prep is confirmed
   }
+
+  // ✅ Always pause speech before prep begins
+  pauseSpeechTimer();
 
   isPrepRunning ? pausePrepTimer() : startPrepTimer();
 });
