@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Policy Debate Timer</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Optional: external stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- 🔒 Security: Prevent iframe embedding (clickjacking protection) -->
+  <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none';">
+</head>
+<body class="bg-gray-900 text-white font-sans p-4 min-h-screen">
+
+  <!-- 🔠 Accessible Page Heading -->
+  <h1 class="text-center text-3xl font-bold mb-6" role="heading" aria-level="1">Policy Debate Timer</h1>
+
+  <!-- 🎤 Speech Buttons -->
+  <div class="grid grid-cols-4 gap-2 mb-6" role="group" aria-label="Speech Selection Buttons">
+    <button class="bg-blue-600 text-white py-2 rounded focus:outline-none focus:ring-2 focus:ring-white" aria-label="Start 1AC Speech (5 minutes)">1AC (5m)</button>
+    <button class="bg-purple-600 text-white py-2 rounded focus:outline-none focus:ring-2 focus:ring-white" aria-label="Start CX1 Cross Examination (3 minutes)">CX1 (3m)</button>
+    <button class="bg-blue-600 text-white py-2 rounded focus:outline-none focus:ring-2 focus:ring-white" aria-label="Start 1NC Speech (5 minutes)">1NC (5m)</button>
+    <button class="bg-purple-600 text-white py-2 rounded focus:outline-none focus:ring-2 focus:ring-white" aria-label="Start CX2 Cross Examination (3 minutes)">CX2 (3m)</button>
+
+    <button class="bg-blue-600 text-white py-2 rounded focus:outline-none focus:ring-2 focus:ring-white" aria-label="Start 2AC Speech (5 minutes)">2AC (5m)</button>
+    <button class="bg-purple-600 text-white py-2 rounded focus:outline-none focus:ring-2 focus:ring-white" aria-label="Start CX3 Cross Examination (3 minutes)">CX3 (3m)</button>
+    <button class="bg-blue-600 text-white py-2 rounded focus:outline-none focus:ring-2 focus:ring-white" aria-label="Start 2NC Speech (5 minutes)">2NC (5m)</button>
+    <button class="bg-purple-600 text-white py-2 rounded focus:outline-none focus:ring-2 focus:ring-white" aria-label="Start CX4 Cross Examination (3 minutes)">CX4 (3m)</button>
+
+    <button class="bg-blue-600 text-white py-2 rounded focus:outline-none focus:ring-2 focus:ring-white" aria-label="Start 1NR Speech (3 minutes)">1NR (3m)</button>
+    <button class="bg-blue-600 text-white py-2 rounded focus:outline-none focus:ring-2 focus:ring-white" aria-label="Start 1AR Speech (3 minutes)">1AR (3m)</button>
+    <button class="bg-blue-600 text-white py-2 rounded focus:outline-none focus:ring-2 focus:ring-white" aria-label="Start 2NR Speech (3 minutes)">2NR (3m)</button>
+    <button class="bg-blue-600 text-white py-2 rounded focus:outline-none focus:ring-2 focus:ring-white" aria-label="Start 2AR Speech (3 minutes)">2AR (3m)</button>
+  </div>
+
+  <!-- 🕒 Main Speech Timer -->
+  <div class="text-center mb-6">
+    <p class="text-lg mb-2">Select a speech to begin</p>
+    <div id="speechTimerContainer" class="bg-gray-800 p-4 rounded-lg" role="region" aria-label="Speech Timer">
+      <h2 id="main-timer" class="text-6xl font-bold mb-4" aria-live="polite">5:00</h2>
+      <input type="range" min="0" max="300" value="300" id="speech-progress" class="w-full accent-green-500 mb-4" aria-label="Adjust speech timer">
+      <div class="flex justify-center gap-4">
+        <button id="start-btn" class="bg-green-600 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-white" aria-label="Start or Pause Speech Timer">Start</button>
+        <button id="reset-btn" class="bg-red-600 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-white" aria-label="Reset Speech Timer">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⏳ Prep Timer -->
+  <div id="prepTimerContainer" class="bg-gray-800 p-4 rounded-lg" role="region" aria-label="Prep Time Timer">
+    <p class="mb-1">Prep Time (<span id="prep-remaining">5:00</span> remaining)</p>
+    <h2 id="prep-timer" class="text-3xl font-bold mb-4" aria-live="polite">5:00</h2>
+    <input type="range" min="0" max="300" value="300" id="prep-progress" class="w-full accent-blue-600 mb-4" aria-label="Adjust prep timer">
+    <div class="flex justify-center gap-4">
+      <button id="start-prep-btn" class="bg-blue-600 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-white" aria-label="Start or Pause Prep Timer">Start Prep</button>
+      <button id="reset-prep-btn" class="bg-red-600 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-white" aria-label="Reset Prep Timer">Reset Prep</button>
+    </div>
+  </div>
+
+  <!-- 📋 Responsibilities Panel -->
+  <button id="responsibilities-toggle"
+          class="fixed top-4 right-4 bg-gray-700 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-white"
+          aria-expanded="false"
+          aria-controls="responsibilities-panel">
+    Responsibilities
+  </button>
+
+  <div id="responsibilities-panel"
+       class="fixed top-0 right-0 w-2/3 sm:w-1/3 h-full bg-gray-800 text-white p-4 shadow-lg transform translate-x-full transition-transform duration-300 overflow-y-auto z-40"
+       role="complementary"
+       aria-hidden="true">
+    <h3 class="text-xl font-bold mb-4" role="heading" aria-level="2">Speech Responsibilities</h3>
+    <ul id="responsibilities-list" class="list-disc list-inside space-y-2">
+      <li>Choose a speech to load responsibilities.</li>
+    </ul>
+  </div>
+
+  <!-- 👨‍💻 Main Script -->
+  <script src="script.js"></script>
+</body>
+</html>
