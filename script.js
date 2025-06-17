@@ -148,6 +148,12 @@ document.querySelectorAll('.grid button').forEach(button => {
     const label = button.textContent.split(' ')[0];
     const time = speechTimes[label];
 
+    if (isPrepRunning) {
+      const confirmSwitch = window.confirm("Prep time is currently running. Are you sure you want to pause Prep Time and start a speech?");
+      if (!confirmSwitch) return;
+      pausePrepTimer();
+    }
+
     if (isSpeechRunning) {
       const confirmReset = window.confirm("A speech is already being timed. Are you sure you want to switch to a new speech? This will reset the timer.");
       if (!confirmReset) return;
@@ -183,6 +189,7 @@ startPrepBtn.addEventListener('click', () => {
   if (!isPrepRunning && isSpeechRunning) {
     const confirmStartPrep = window.confirm("A speech is currently being timed. Are you sure you want to use prep time now?");
     if (!confirmStartPrep) return;
+    pauseSpeechTimer(); // ✅ Pause speech if prep is confirmed
   }
 
   isPrepRunning ? pausePrepTimer() : startPrepTimer();
