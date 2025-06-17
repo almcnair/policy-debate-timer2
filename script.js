@@ -186,16 +186,19 @@ speechProgress.addEventListener('input', (e) => {
 });
 
 startPrepBtn.addEventListener('click', () => {
+  // If prep is not running and speech is currently running
   if (!isPrepRunning && isSpeechRunning) {
     const confirmStartPrep = window.confirm("A speech is currently being timed. Are you sure you want to use prep time now?");
     if (!confirmStartPrep) return;
+
+    // ✅ Pause speech timer only after confirmation
+    pauseSpeechTimer();
   }
 
-  // ✅ Always pause speech before prep begins
-  pauseSpeechTimer();
-
+  // Toggle prep timer
   isPrepRunning ? pausePrepTimer() : startPrepTimer();
 });
+
 
 resetPrepBtn.addEventListener('click', () => {
   pausePrepTimer();
