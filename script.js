@@ -7,10 +7,11 @@ let prepTimer;
 let prepTimeLeft = 300;
 let isPrepRunning = false;
 
-// ====== USER SETUP ======
 let userRole = '';
 let userLevel = '';
+let speechTimes = {};
 
+// ====== TIME PRESETS ======
 const timePresets = {
   middle: {
     speechTimes: {
@@ -30,8 +31,6 @@ const timePresets = {
   }
 };
 
-let speechTimes = {};
-
 // ====== DOM ELEMENTS ======
 const mainTimer = document.getElementById('main-timer');
 const speechProgress = document.getElementById('speech-progress');
@@ -44,20 +43,27 @@ const prepRemaining = document.getElementById('prep-remaining');
 const startPrepBtn = document.getElementById('start-prep-btn');
 const resetPrepBtn = document.getElementById('reset-prep-btn');
 
-// ====== FORMAT TIME FUNCTION ======
+// ====== TIME DISPLAY ======
 function formatTime(seconds) {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
-// ====== SPEECH TIMER FUNCTIONS ======
 function updateSpeechDisplay() {
   mainTimer.textContent = formatTime(speechTimeLeft);
   speechProgress.value = speechTimeLeft;
   speechProgress.max = speechTimeLeft;
 }
 
+function updatePrepDisplay() {
+  prepTimerDisplay.textContent = formatTime(prepTimeLeft);
+  prepRemaining.textContent = formatTime(prepTimeLeft);
+  prepProgress.value = prepTimeLeft;
+  prepProgress.max = prepTimeLeft;
+}
+
+// ====== SPEECH TIMER ======
 function startSpeechTimer() {
   if (isSpeechRunning) return;
   isSpeechRunning = true;
@@ -83,14 +89,7 @@ function pauseSpeechTimer() {
   clearInterval(speechTimer);
 }
 
-// ====== PREP TIMER FUNCTIONS ======
-function updatePrepDisplay() {
-  prepTimerDisplay.textContent = formatTime(prepTimeLeft);
-  prepRemaining.textContent = formatTime(prepTimeLeft);
-  prepProgress.value = prepTimeLeft;
-  prepProgress.max = prepTimeLeft;
-}
-
+// ====== PREP TIMER ======
 function startPrepTimer() {
   if (isPrepRunning) return;
   isPrepRunning = true;
@@ -128,7 +127,7 @@ function showPrepUsedToast(message) {
   setTimeout(() => toast.remove(), 2000);
 }
 
-// ====== RESPONSIBILITIES ======
+// ====== RESPONSIBILITIES PANEL ======
 function updateResponsibilities(currentSpeechLabel) {
   const roleNameMap = {
     "1A": "1st Affirmative",
@@ -156,17 +155,7 @@ function updateResponsibilities(currentSpeechLabel) {
     listEl.appendChild(item);
   };
 
-  const speakerMap = {
-    '1A': ['1AC', 'CX1', '2AC', 'CX3', '1AR', '2AR'],
-    '2A': ['CX1', '2AC', 'CX3', '1AR', '2AR'],
-    '1N': ['1NC', 'CX2', '2NC', 'CX4', '1NR', '2NR'],
-    '2N': ['CX2', '2NC', 'CX4', '1NR', '2NR'],
-    'Judge': ['1AC','1NC','2AC','2NC','1NR','1AR','2NR','2AR','CX1','CX2','CX3','CX4']
-  };
-
-  const isMySpeech = speakerMap[userRole]?.includes(currentSpeechLabel);
-
-  if (isMySpeech && speechData) {
+  if (speechData) {
     addCategory('Core Responsibilities', speechData.core);
     addCategory('Style & Strategy Tips', speechData.style);
     addCategory('Reminders & Common Mistakes', speechData.mistakes);
@@ -174,10 +163,107 @@ function updateResponsibilities(currentSpeechLabel) {
     const tip = (userRole === 'Judge')
       ? "Listen carefully; take notes on clarity, clash, and credibility."
       : `Be sure to flow and prepare responses to ${currentSpeechLabel}.`;
-
     listEl.innerHTML = `<li>${tip}</li>`;
   }
 }
 
 // ====== SPEECH BUTTON HANDLING ======
-document.querySele
+document.querySelectorAll('.grid button').forEach(button => {
+  button.addEventListener('click', () => {
+    const label = button.textContent.split(' ')[0];
+    const time = speechTimes[label];
+
+    if (!time) {
+      alert("Please click 'Start Debate Timer' first to set role and division.");
+      return;
+    }
+
+    if (isPrepRunning) {
+      const confirmSwitch = window.confirm("Prep time is currently running. Pause and start speech?");
+      if (!confirmSwitch) return;
+      pausePrepTimer();
+    }
+
+    if (isSpeechRunning) {
+      const confirmReset = window.confirm("A speech is already being timed. Switch speeches?");
+      if (!confirmReset) return;
+    }
+
+    pauseSpeechTimer();
+    speechTimeLeft = time;
+    updateSpeechDisplay();
+    document.getElementById('speechTimerContainer').classList.remove('bg-red-600');
+    startSpeechTimer();
+    updateResponsibilities(label);
+  });
+});
+
+// ====== BUTTON EVENTS ======
+startBtn.addEventListener('click', () => {
+  isSpeechRunning ? pauseSpeechTimer() : startSpeechTimer();
+});
+
+resetBtn.addEventListener('click', () => {
+  pauseSpeechTimer();
+  speechTimeLeft = 300;
+  updateSpeechDisplay();
+  document.getElementById('speechTimerContainer').classList.remove('bg-red-600');
+});
+
+speechProgress.addEventListener('input', e => {
+  speechTimeLeft = parseInt(e.target.value);
+  updateSpeechDisplay();
+});
+
+startPrepBtn.addEventListener('click', () => {
+  if (!isPrepRunning && isSpeechRunning) {
+    const confirmStartPrep = window.confirm("A speech is running. Use prep time instead?");
+    if (!confirmStartPrep) return;
+    pauseSpeechTimer();
+  }
+
+  isPrepRunning ? pausePrepTimer() : startPrepTimer();
+});
+
+resetPrepBtn.addEventListener('click', () => {
+  pausePrepTimer();
+  prepTimeLeft = timePresets[userLevel].prepTime;
+  updatePrepDisplay();
+});
+
+prepProgress.addEventListener('input', e => {
+  prepTimeLeft = parseInt(e.target.value);
+  updatePrepDisplay();
+});
+
+// ====== RESPONSIBILITIES TOGGLE ======
+document.getElementById('responsibilities-toggle').addEventListener('click', e => {
+  e.stopPropagation();
+  document.getElementById('responsibilities-panel').classList.toggle('translate-x-full');
+});
+
+document.addEventListener('click', e => {
+  const panel = document.getElementById('responsibilities-panel');
+  const toggle = document.getElementById('responsibilities-toggle');
+  if (!panel.contains(e.target) && !toggle.contains(e.target)) {
+    panel.classList.add('translate-x-full');
+  }
+});
+
+// ====== START DEBATE TIMER ======
+document.getElementById('setup-confirm').addEventListener('click', () => {
+  userRole = document.getElementById('role-select').value;
+  userLevel = document.getElementById('level-select').value;
+
+  speechTimes = timePresets[userLevel].speechTimes;
+  prepTimeLeft = timePresets[userLevel].prepTime;
+
+  document.getElementById('setup-modal').style.display = 'none';
+
+  updateSpeechDisplay();
+  updatePrepDisplay();
+});
+
+// ====== INIT ======
+updateSpeechDisplay();
+updatePrepDisplay();
