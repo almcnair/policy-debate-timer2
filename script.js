@@ -434,10 +434,41 @@ function updateResponsibilities(currentSpeechLabel) {
   const listEl = document.getElementById('responsibilities-list');
   listEl.innerHTML = '';
 
-  if (!speechData) {
-    listEl.innerHTML = `<li>No responsibilities found for this speech.</li>`;
-    return;
+  // 🧠 Helper function to format a category
+  const addCategory = (title, content) => {
+    const heading = document.createElement('h4');
+    heading.className = 'font-bold mt-4';
+    heading.textContent = title;
+    listEl.appendChild(heading);
+
+    const item = document.createElement('li');
+    item.textContent = content;
+    listEl.appendChild(item);
+  };
+
+  const speakerMap = {
+    '1A': ['1AC', 'CX1', '2AC', 'CX3', '1AR', '2AR'],
+    '2A': ['CX1', '2AC', 'CX3', '1AR', '2AR'],
+    '1N': ['1NC', 'CX2', '2NC', 'CX4', '1NR', '2NR'],
+    '2N': ['CX2', '2NC', 'CX4', '1NR', '2NR'],
+    'Judge': ['1AC','1NC','2AC','2NC','1NR','1AR','2NR','2AR','CX1','CX2','CX3','CX4']
+  };
+
+  const isMySpeech = speakerMap[userRole]?.includes(currentSpeechLabel);
+
+  if (isMySpeech && speechData) {
+    addCategory('Core Responsibilities', speechData.core);
+    addCategory('Style & Strategy Tips', speechData.style);
+    addCategory('Reminders & Common Mistakes', speechData.mistakes);
+  } else {
+    const tip = (userRole === 'Judge')
+      ? "Listen carefully; take notes on clarity, clash, and credibility."
+      : `Be sure to flow and prepare responses to ${currentSpeechLabel}.`;
+
+    listEl.innerHTML = `<li>${tip}</li>`;
   }
+}
+
 
   const addCategory = (title, content) => {
     const heading = document.createElement('h4');
