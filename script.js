@@ -297,17 +297,21 @@ function updateResponsibilities(speechLabel) {
 
   const data = fullResponsibilities[userRole][speechLabel] || {
     core: `Be sure to flow and prepare responses to ${speechLabel}.`,
-    style: '',
-    reminders: ''
+    style: 'Use clear and strategic delivery.',
+    reminders: 'Avoid common errors such as poor flow or time management.'
   };
 
-  ['core', 'style', 'reminders'].forEach(key => {
-    if (data[key]) {
-      const li = document.createElement('li');
-      li.textContent = `${key.charAt(0).toUpperCase() + key.slice(1)}: ${data[key]}`;
-      listEl.appendChild(li);
-    }
-  });
+  const categories = {
+    'Core Responsibilities': data.core,
+    'Style & Strategy Tips': data.style,
+    'Reminders & Common Mistakes': data.reminders
+  };
+
+  for (const [title, content] of Object.entries(categories)) {
+    const li = document.createElement('li');
+    li.innerHTML = `<strong>${title}:</strong> ${content}`;
+    listEl.appendChild(li);
+  }
 }
 
 document.getElementById('setup-confirm').addEventListener('click', () => {
@@ -319,7 +323,6 @@ document.getElementById('setup-confirm').addEventListener('click', () => {
 
   document.getElementById('setup-modal').style.display = 'none';
 
-  // Update button labels with correct time (e.g., 8m or 5m)
   document.querySelectorAll('.grid button').forEach(button => {
     const label = button.textContent.split(' ')[0];
     const newTime = Math.floor(speechTimes[label] / 60);
