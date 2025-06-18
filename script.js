@@ -151,6 +151,54 @@ const detailedResponsibilities = {
       style: "Clarify gaps in logic; remain calm and controlled.",
       mistakes: "Don’t waste time; avoid hostile tone."
     }
+  },
+  "2nd Negative": {
+    "2NC": {
+      core: "Present new off-case or extend partner’s arguments clearly.",
+      style: "Be organized, slow down, and emphasize key points.",
+      mistakes: "Don’t drop arguments or rush through blocks."
+    },
+    "CX (2AC)": {
+      core: "Flow carefully and prepare to extend or refute.",
+      style: "Clarify contradictions; listen actively.",
+      mistakes: "Avoid distraction; don’t zone out."
+    }
+  },
+  "Judge": {
+    "1AC": {
+      core: "Listen for clarity and structure of the case.",
+      style: "Take notes on how well the speaker signposts.",
+      mistakes: "Don’t get caught in jargon; focus on flow and persuasion."
+    },
+    "2NC": {
+      core: "Evaluate how well arguments are extended or defended.",
+      style: "Look for signposting, clear logic, and clash.",
+      mistakes: "Avoid judging based on speed or delivery style alone."
+    }
+  }
+};
+
+  "1st Affirmative": {
+    "1AC": {
+      core: "Present the affirmative case: resolution, harms, inherency, solvency, and plan.",
+      style: "Use persuasive tone, emphasize clarity, and signpost structure (e.g., 'First, the Harms...').",
+      mistakes: "Avoid reading too quickly; practice a strong opening."
+    },
+    "CX (1AC)": {
+      core: "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      style: "Stay focused; prep extensions or responses.",
+      mistakes: "Don’t zone out; avoid messy or incomplete flows."
+    },
+    "1NC": {
+      core: "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      style: "Stay focused; prep extensions or responses.",
+      mistakes: "Don’t zone out; avoid messy or incomplete flows."
+    },
+    "CX (1NC)": {
+      core: "Ask pointed questions to weaken opposing arguments.",
+      style: "Clarify gaps in logic; remain calm and controlled.",
+      mistakes: "Don’t waste time; avoid hostile tone."
+    }
   }
   // (I’ll give you the rest of the roles/speeches next)
 };
