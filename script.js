@@ -305,4 +305,5 @@ document.addEventListener('click', e => {
 // ====== INIT ======
 updateSpeechDisplay();
 updatePrepDisplay();
+});
 
