@@ -301,36 +301,15 @@ function updateResponsibilities(speechLabel) {
     reminders: 'Avoid common errors such as poor flow or time management.'
   };
 
-  const categories = {
-    'Core Responsibilities': data.core,
-    'Style & Strategy Tips': data.style,
-    'Reminders & Common Mistakes': data.reminders
-  };
+  const coreLi = document.createElement('li');
+  coreLi.innerHTML = `<strong>Core Responsibilities:</strong> ${data.core}`;
+  listEl.appendChild(coreLi);
 
-  for (const [title, content] of Object.entries(categories)) {
-    const li = document.createElement('li');
-    li.innerHTML = `<strong>${title}:</strong> ${content}`;
-    listEl.appendChild(li);
-  }
+  const styleLi = document.createElement('li');
+  styleLi.innerHTML = `<strong>Style & Strategy Tips:</strong> ${data.style}`;
+  listEl.appendChild(styleLi);
+
+  const remindersLi = document.createElement('li');
+  remindersLi.innerHTML = `<strong>Reminders & Common Mistakes:</strong> ${data.reminders}`;
+  listEl.appendChild(remindersLi);
 }
-
-document.getElementById('setup-confirm').addEventListener('click', () => {
-  userRole = document.getElementById('role-select').value;
-  userLevel = document.getElementById('level-select').value;
-
-  speechTimes = timePresets[userLevel].speechTimes;
-  prepTimeLeft = timePresets[userLevel].prepTime;
-
-  document.getElementById('setup-modal').style.display = 'none';
-
-  document.querySelectorAll('.grid button').forEach(button => {
-    const label = button.textContent.split(' ')[0];
-    const newTime = Math.floor(speechTimes[label] / 60);
-    if (!isNaN(newTime)) {
-      button.textContent = `${label} (${newTime}m)`;
-    }
-  });
-
-  updateSpeechDisplay();
-  updatePrepDisplay();
-});
