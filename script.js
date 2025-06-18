@@ -156,19 +156,43 @@ const detailedResponsibilities = {
 };
 
 
-function updateResponsibilities(speechLabel) {
+function updateResponsibilities(currentSpeechLabel) {
+  const roleNameMap = {
+    "1A": "1st Affirmative",
+    "2A": "2nd Affirmative",
+    "1N": "1st Negative",
+    "2N": "2nd Negative",
+    "Judge": "Judge"
+  };
+
+  const userFriendlyRole = roleNameMap[userRole];
+  const roleData = detailedResponsibilities[userFriendlyRole];
+  const speechData = roleData?.[currentSpeechLabel];
+
   const listEl = document.getElementById('responsibilities-list');
   listEl.innerHTML = '';
 
-  if (userRole === 'Judge') {
-    const judgeResp = speechResponsibilities[`Judge_${speechLabel}`] || ['Observe arguments and take notes.'];
-    judgeResp.forEach(item => {
-      const li = document.createElement('li');
-      li.textContent = item;
-      listEl.appendChild(li);
-    });
+  if (!speechData) {
+    listEl.innerHTML = `<li>No responsibilities found for this speech.</li>`;
     return;
   }
+
+  const addCategory = (title, content) => {
+    const heading = document.createElement('h4');
+    heading.className = 'font-bold mt-4';
+    heading.textContent = title;
+    listEl.appendChild(heading);
+
+    const item = document.createElement('li');
+    item.textContent = content;
+    listEl.appendChild(item);
+  };
+
+  addCategory('Core Responsibilities', speechData.core);
+  addCategory('Style & Strategy Tips', speechData.style);
+  addCategory('Reminders & Common Mistakes', speechData.mistakes);
+}
+
 
   const speakerMap = {
     '1A': ['1AC', 'CX1', '2AC', 'CX3', '1AR', '2AR'],
