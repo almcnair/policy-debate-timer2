@@ -132,48 +132,287 @@ function showPrepUsedToast(message) {
 const detailedResponsibilities = {
   "1st Affirmative": {
     "1AC": {
-      core: "Present the affirmative case: resolution, harms, inherency, solvency, and plan.",
-      style: "Use persuasive tone, emphasize clarity, and signpost structure (e.g., 'First, the Harms...').",
-      mistakes: "Avoid reading too quickly; practice a strong opening."
+      "core": "Present the affirmative case: resolution, harms, inherency, solvency, and plan.",
+      "style": "Use persuasive tone, emphasize clarity, and signpost structure (e.g., 'First, the Harms...').",
+      "mistakes": "Avoid reading too quickly; practice a strong opening."
     },
     "CX (1AC)": {
-      core: "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
-      style: "Stay focused; prep extensions or responses.",
-      mistakes: "Don’t zone out; avoid messy or incomplete flows."
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
     },
     "1NC": {
-      core: "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
-      style: "Stay focused; prep extensions or responses.",
-      mistakes: "Don’t zone out; avoid messy or incomplete flows."
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
     },
     "CX (1NC)": {
-      core: "Ask pointed questions to weaken opposing arguments.",
-      style: "Clarify gaps in logic; remain calm and controlled.",
-      mistakes: "Don’t waste time; avoid hostile tone."
+      "core": "Ask pointed questions to weaken opposing arguments.",
+      "style": "Clarify gaps in logic; remain calm and controlled.",
+      "mistakes": "Don\u2019t waste time; avoid hostile tone."
+    },
+    "2AC": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "CX (2AC)": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "2NC": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "1NR": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "1AR": {
+      "core": "Refute 1NR and 2NC; crystallize aff case; collapse to core issues.",
+      "style": "Be efficient; emphasize weighing and impact calculus.",
+      "mistakes": "Avoid re-explaining the 1AC; don\u2019t get lost in low-impact arguments."
+    },
+    "2NR": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "2AR": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    }
+  },
+  "2nd Affirmative": {
+    "1AC": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "CX (1AC)": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "1NC": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "CX (1NC)": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "2AC": {
+      "core": "Answer 1NC arguments; extend 1AC case; rebuild aff offense.",
+      "style": "Sound confident; don't rush; collapse to strong aff positions.",
+      "mistakes": "Don\u2019t drop key 1NC arguments; clarify what you're winning."
+    },
+    "CX (2AC)": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "2NC": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "1NR": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "1AR": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "2NR": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "2AR": {
+      "core": "Deliver final aff speech; extend key issues; win the round.",
+      "style": "Collapse to core themes; compare impacts clearly.",
+      "mistakes": "Don\u2019t make new arguments; stay focused on win conditions."
+    }
+  },
+  "1st Negative": {
+    "1AC": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "CX (1AC)": {
+      "core": "Ask pointed questions to weaken opposing arguments.",
+      "style": "Clarify gaps in logic; remain calm and controlled.",
+      "mistakes": "Don\u2019t waste time; avoid hostile tone."
+    },
+    "1NC": {
+      "core": "Introduce off-case (disads, CPs, topicality); refute 1AC on-case points.",
+      "style": "Label and group arguments clearly. Prioritize important issues.",
+      "mistakes": "Don\u2019t forget to answer all 1AC points; avoid jargon overload."
+    },
+    "CX (1NC)": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "2AC": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "CX (2AC)": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "2NC": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "1NR": {
+      "core": "Finish the negative block; cover arguments 2NC didn't.",
+      "style": "Go fast but flow clearly; prep during 2AC and 2NC.",
+      "mistakes": "Don\u2019t drop new 2AC responses; coordinate with 2NC."
+    },
+    "1AR": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "2NR": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "2AR": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
     }
   },
   "2nd Negative": {
-    "2NC": {
-      core: "Present new off-case or extend partner’s arguments clearly.",
-      style: "Be organized, slow down, and emphasize key points.",
-      mistakes: "Don’t drop arguments or rush through blocks."
+    "1AC": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "CX (1AC)": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "1NC": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "CX (1NC)": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "2AC": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
     },
     "CX (2AC)": {
-      core: "Flow carefully and prepare to extend or refute.",
-      style: "Clarify contradictions; listen actively.",
-      mistakes: "Avoid distraction; don’t zone out."
+      "core": "Ask pointed questions to weaken opposing arguments.",
+      "style": "Clarify gaps in logic; remain calm and controlled.",
+      "mistakes": "Don\u2019t waste time; avoid hostile tone."
+    },
+    "2NC": {
+      "core": "Split the block; extend off-case arguments; deepen strategic attacks.",
+      "style": "Organize by argument; prep with 1NR; stay composed.",
+      "mistakes": "Avoid overlap with 1NR; be sure to extend impacts."
+    },
+    "1NR": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "1AR": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
+    },
+    "2NR": {
+      "core": "Deliver final negative strategy; collapse to 1\u20132 winning arguments.",
+      "style": "Frame the round clearly; use judge-friendly language.",
+      "mistakes": "Don\u2019t introduce new arguments; weigh impacts convincingly."
+    },
+    "2AR": {
+      "core": "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      "style": "Stay focused; prep extensions or responses.",
+      "mistakes": "Don\u2019t zone out; avoid messy or incomplete flows."
     }
   },
   "Judge": {
     "1AC": {
-      core: "Listen for clarity and structure of the case.",
-      style: "Take notes on how well the speaker signposts.",
-      mistakes: "Don’t get caught in jargon; focus on flow and persuasion."
+      "core": "Placeholder for judge info ",
+      "style": "Placeholder for judge info ",
+      "mistakes": "Placeholder for judge info "
+    },
+    "CX (1AC)": {
+      "core": "Placeholder for judge info ",
+      "style": "Placeholder for judge info ",
+      "mistakes": "Placeholder for judge info "
+    },
+    "1NC": {
+      "core": "Placeholder for judge info ",
+      "style": "Placeholder for judge info ",
+      "mistakes": "Placeholder for judge info "
+    },
+    "CX (1NC)": {
+      "core": "Placeholder for judge info ",
+      "style": "Placeholder for judge info ",
+      "mistakes": "Placeholder for judge info "
+    },
+    "2AC": {
+      "core": "Placeholder for judge info ",
+      "style": "Placeholder for judge info ",
+      "mistakes": "Placeholder for judge info "
+    },
+    "CX (2AC)": {
+      "core": "Placeholder for judge info ",
+      "style": "Placeholder for judge info ",
+      "mistakes": "Placeholder for judge info "
     },
     "2NC": {
-      core: "Evaluate how well arguments are extended or defended.",
-      style: "Look for signposting, clear logic, and clash.",
-      mistakes: "Avoid judging based on speed or delivery style alone."
+      "core": "Placeholder for judge info ",
+      "style": "Placeholder for judge info ",
+      "mistakes": "Placeholder for judge info "
+    },
+    "1NR": {
+      "core": "Placeholder for judge info ",
+      "style": "Placeholder for judge info ",
+      "mistakes": "Placeholder for judge info "
+    },
+    "1AR": {
+      "core": "Placeholder for judge info ",
+      "style": "Placeholder for judge info ",
+      "mistakes": "Placeholder for judge info "
+    },
+    "2NR": {
+      "core": "Placeholder for judge info ",
+      "style": "Placeholder for judge info ",
+      "mistakes": "Placeholder for judge info "
+    },
+    "2AR": {
+      "core": "Placeholder for judge info ",
+      "style": "Placeholder for judge info ",
+      "mistakes": "Placeholder for judge info "
     }
   }
 };
