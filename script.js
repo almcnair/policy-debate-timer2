@@ -417,31 +417,6 @@ const detailedResponsibilities = {
   }
 };
 
-  "1st Affirmative": {
-    "1AC": {
-      core: "Present the affirmative case: resolution, harms, inherency, solvency, and plan.",
-      style: "Use persuasive tone, emphasize clarity, and signpost structure (e.g., 'First, the Harms...').",
-      mistakes: "Avoid reading too quickly; practice a strong opening."
-    },
-    "CX (1AC)": {
-      core: "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
-      style: "Stay focused; prep extensions or responses.",
-      mistakes: "Don’t zone out; avoid messy or incomplete flows."
-    },
-    "1NC": {
-      core: "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
-      style: "Stay focused; prep extensions or responses.",
-      mistakes: "Don’t zone out; avoid messy or incomplete flows."
-    },
-    "CX (1NC)": {
-      core: "Ask pointed questions to weaken opposing arguments.",
-      style: "Clarify gaps in logic; remain calm and controlled.",
-      mistakes: "Don’t waste time; avoid hostile tone."
-    }
-  }
-  // (I’ll give you the rest of the roles/speeches next)
-};
-
 
 function updateResponsibilities(currentSpeechLabel) {
   const roleNameMap = {
