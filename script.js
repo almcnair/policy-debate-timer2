@@ -1,3 +1,44 @@
+document.addEventListener('DOMContentLoaded', () => {
+
+// ====== RESPONSIBILITIES DATA ======
+const detailedResponsibilities = {
+  "1st Affirmative": {
+    "1AC": {
+      "core": "Present the affirmative case: resolution, harms, inherency, solvency, and plan.",
+      "style": "Use persuasive tone, emphasize clarity, and signpost structure (e.g., 'First, the Harms...').",
+      "mistakes": "Avoid reading too quickly; practice a strong opening."
+    }
+  },
+  "2nd Affirmative": {
+    "2AC": {
+      "core": "Answer 1NC arguments; extend 1AC case; rebuild aff offense.",
+      "style": "Sound confident; don't rush; collapse to strong aff positions.",
+      "mistakes": "Don’t drop key 1NC arguments; clarify what you're winning."
+    }
+  },
+  "1st Negative": {
+    "1NC": {
+      "core": "Introduce off-case (disads, CPs, topicality); refute 1AC on-case points.",
+      "style": "Label and group arguments clearly. Prioritize important issues.",
+      "mistakes": "Don’t forget to answer all 1AC points; avoid jargon overload."
+    }
+  },
+  "2nd Negative": {
+    "2NC": {
+      "core": "Split the block; extend off-case arguments; deepen strategic attacks.",
+      "style": "Organize by argument; prep with 1NR; stay composed.",
+      "mistakes": "Avoid overlap with 1NR; be sure to extend impacts."
+    }
+  },
+  "Judge": {
+    "1AC": {
+      "core": "Judge watches and flows the round.",
+      "style": "Remain objective. Listen for clash, logic, and clarity.",
+      "mistakes": "Avoid distractions or bias."
+    }
+  }
+};
+
 // ====== TIMER VARIABLES ======
 let speechTimer;
 let speechTimeLeft = 300;
@@ -36,34 +77,26 @@ const mainTimer = document.getElementById('main-timer');
 const speechProgress = document.getElementById('speech-progress');
 const startBtn = document.getElementById('start-btn');
 const resetBtn = document.getElementById('reset-btn');
-
 const prepTimerDisplay = document.getElementById('prep-timer');
 const prepProgress = document.getElementById('prep-progress');
 const prepRemaining = document.getElementById('prep-remaining');
 const startPrepBtn = document.getElementById('start-prep-btn');
 const resetPrepBtn = document.getElementById('reset-prep-btn');
 
-// ====== TIME DISPLAY ======
+// ====== UTILITIES ======
 function formatTime(seconds) {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
+// ====== SPEECH TIMER FUNCTIONS ======
 function updateSpeechDisplay() {
   mainTimer.textContent = formatTime(speechTimeLeft);
   speechProgress.value = speechTimeLeft;
   speechProgress.max = speechTimeLeft;
 }
 
-function updatePrepDisplay() {
-  prepTimerDisplay.textContent = formatTime(prepTimeLeft);
-  prepRemaining.textContent = formatTime(prepTimeLeft);
-  prepProgress.value = prepTimeLeft;
-  prepProgress.max = prepTimeLeft;
-}
-
-// ====== SPEECH TIMER ======
 function startSpeechTimer() {
   if (isSpeechRunning) return;
   isSpeechRunning = true;
@@ -89,7 +122,14 @@ function pauseSpeechTimer() {
   clearInterval(speechTimer);
 }
 
-// ====== PREP TIMER ======
+// ====== PREP TIMER FUNCTIONS ======
+function updatePrepDisplay() {
+  prepTimerDisplay.textContent = formatTime(prepTimeLeft);
+  prepRemaining.textContent = formatTime(prepTimeLeft);
+  prepProgress.value = prepTimeLeft;
+  prepProgress.max = prepTimeLeft;
+}
+
 function startPrepTimer() {
   if (isPrepRunning) return;
   isPrepRunning = true;
@@ -127,7 +167,7 @@ function showPrepUsedToast(message) {
   setTimeout(() => toast.remove(), 2000);
 }
 
-// ====== RESPONSIBILITIES PANEL ======
+// ====== RESPONSIBILITIES FUNCTION ======
 function updateResponsibilities(currentSpeechLabel) {
   const roleNameMap = {
     "1A": "1st Affirmative",
@@ -140,7 +180,6 @@ function updateResponsibilities(currentSpeechLabel) {
   const userFriendlyRole = roleNameMap[userRole];
   const roleData = detailedResponsibilities[userFriendlyRole];
   const speechData = roleData?.[currentSpeechLabel];
-
   const listEl = document.getElementById('responsibilities-list');
   listEl.innerHTML = '';
 
@@ -167,25 +206,25 @@ function updateResponsibilities(currentSpeechLabel) {
   }
 }
 
-// ====== SPEECH BUTTON HANDLING ======
+// ====== EVENT LISTENERS ======
 document.querySelectorAll('.grid button').forEach(button => {
   button.addEventListener('click', () => {
     const label = button.textContent.split(' ')[0];
     const time = speechTimes[label];
 
     if (!time) {
-      alert("Please click 'Start Debate Timer' first to set role and division.");
+      alert("Please click 'Start Debate Timer' first.");
       return;
     }
 
     if (isPrepRunning) {
-      const confirmSwitch = window.confirm("Prep time is currently running. Pause and start speech?");
+      const confirmSwitch = window.confirm("Prep time is running. Pause and start speech?");
       if (!confirmSwitch) return;
       pausePrepTimer();
     }
 
     if (isSpeechRunning) {
-      const confirmReset = window.confirm("A speech is already being timed. Switch speeches?");
+      const confirmReset = window.confirm("Speech is running. Switch speeches?");
       if (!confirmReset) return;
     }
 
@@ -198,7 +237,6 @@ document.querySelectorAll('.grid button').forEach(button => {
   });
 });
 
-// ====== BUTTON EVENTS ======
 startBtn.addEventListener('click', () => {
   isSpeechRunning ? pauseSpeechTimer() : startSpeechTimer();
 });
@@ -217,7 +255,7 @@ speechProgress.addEventListener('input', e => {
 
 startPrepBtn.addEventListener('click', () => {
   if (!isPrepRunning && isSpeechRunning) {
-    const confirmStartPrep = window.confirm("A speech is running. Use prep time instead?");
+    const confirmStartPrep = window.confirm("A speech is running. Use prep instead?");
     if (!confirmStartPrep) return;
     pauseSpeechTimer();
   }
@@ -236,6 +274,20 @@ prepProgress.addEventListener('input', e => {
   updatePrepDisplay();
 });
 
+// ====== MODAL SETUP CONFIRMATION ======
+document.getElementById('setup-confirm').addEventListener('click', () => {
+  userRole = document.getElementById('role-select').value;
+  userLevel = document.getElementById('level-select').value;
+
+  speechTimes = timePresets[userLevel].speechTimes;
+  prepTimeLeft = timePresets[userLevel].prepTime;
+
+  document.getElementById('setup-modal').style.display = 'none';
+
+  updateSpeechDisplay();
+  updatePrepDisplay();
+});
+
 // ====== RESPONSIBILITIES TOGGLE ======
 document.getElementById('responsibilities-toggle').addEventListener('click', e => {
   e.stopPropagation();
@@ -250,20 +302,8 @@ document.addEventListener('click', e => {
   }
 });
 
-// ====== START DEBATE TIMER ======
-document.getElementById('setup-confirm').addEventListener('click', () => {
-  userRole = document.getElementById('role-select').value;
-  userLevel = document.getElementById('level-select').value;
-
-  speechTimes = timePresets[userLevel].speechTimes;
-  prepTimeLeft = timePresets[userLevel].prepTime;
-
-  document.getElementById('setup-modal').style.display = 'none';
-
-  updateSpeechDisplay();
-  updatePrepDisplay();
-});
-
 // ====== INIT ======
 updateSpeechDisplay();
 updatePrepDisplay();
+
+});
