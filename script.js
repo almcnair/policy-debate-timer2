@@ -129,11 +129,32 @@ function showPrepUsedToast(message) {
 }
 
 // ====== RESPONSIBILITIES (simplified for demo) ======
-const speechResponsibilities = {
-  '1AC': ['Present the affirmative case: resolution, harms, inherency, solvency, and plan.'],
-  '1A_1NC': ['Flow the 1NC', 'Prep for 2AC'],
-  'Judge_1AC': ['Listen for clarity and organization']
+const detailedResponsibilities = {
+  "1st Affirmative": {
+    "1AC": {
+      core: "Present the affirmative case: resolution, harms, inherency, solvency, and plan.",
+      style: "Use persuasive tone, emphasize clarity, and signpost structure (e.g., 'First, the Harms...').",
+      mistakes: "Avoid reading too quickly; practice a strong opening."
+    },
+    "CX (1AC)": {
+      core: "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      style: "Stay focused; prep extensions or responses.",
+      mistakes: "Don’t zone out; avoid messy or incomplete flows."
+    },
+    "1NC": {
+      core: "Flow carefully; track Uniqueness, Links, Internal Links, and Impacts.",
+      style: "Stay focused; prep extensions or responses.",
+      mistakes: "Don’t zone out; avoid messy or incomplete flows."
+    },
+    "CX (1NC)": {
+      core: "Ask pointed questions to weaken opposing arguments.",
+      style: "Clarify gaps in logic; remain calm and controlled.",
+      mistakes: "Don’t waste time; avoid hostile tone."
+    }
+  }
+  // (I’ll give you the rest of the roles/speeches next)
 };
+
 
 function updateResponsibilities(speechLabel) {
   const listEl = document.getElementById('responsibilities-list');
