@@ -306,16 +306,3 @@ document.addEventListener('click', e => {
 updateSpeechDisplay();
 updatePrepDisplay();
 
-});
-document.getElementById('responsibilities-toggle').addEventListener('click', e => {
-  e.stopPropagation();
-  document.getElementById('responsibilities-panel').classList.toggle('translate-x-full');
-});
-
-document.addEventListener('click', e => {
-  const panel = document.getElementById('responsibilities-panel');
-  const toggle = document.getElementById('responsibilities-toggle');
-  if (!panel.contains(e.target) && !toggle.contains(e.target)) {
-    panel.classList.add('translate-x-full');
-  }
-});
