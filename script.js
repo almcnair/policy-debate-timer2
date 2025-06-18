@@ -26,7 +26,7 @@ const timePresets = {
       '1NR': 300, '1AR': 300, '2NR': 300, '2AR': 300,
       'CX1': 180, 'CX2': 180, 'CX3': 180, 'CX4': 180
     },
-    prepTime: 300
+    prepTime: 480
   }
 };
 
@@ -55,6 +55,7 @@ function formatTime(seconds) {
 function updateSpeechDisplay() {
   mainTimer.textContent = formatTime(speechTimeLeft);
   speechProgress.value = speechTimeLeft;
+  speechProgress.max = speechTimeLeft;
 }
 
 function startSpeechTimer() {
@@ -87,6 +88,7 @@ function updatePrepDisplay() {
   prepTimerDisplay.textContent = formatTime(prepTimeLeft);
   prepRemaining.textContent = formatTime(prepTimeLeft);
   prepProgress.value = prepTimeLeft;
+  prepProgress.max = prepTimeLeft;
 }
 
 function startPrepTimer() {
@@ -104,7 +106,7 @@ function startPrepTimer() {
     prepTimeLeft--;
 
     if (prepTimeLeft % 60 === 59) {
-      const used = 300 - prepTimeLeft;
+      const used = timePresets[userLevel].prepTime - prepTimeLeft;
       showPrepUsedToast(`${Math.floor(used / 60)} minute${used >= 120 ? 's' : ''} of prep used`);
     }
 
@@ -118,7 +120,6 @@ function pausePrepTimer() {
   clearInterval(prepTimer);
 }
 
-// ====== TOAST FUNCTION ======
 function showPrepUsedToast(message) {
   const toast = document.createElement('div');
   toast.textContent = message;
@@ -127,23 +128,20 @@ function showPrepUsedToast(message) {
   setTimeout(() => toast.remove(), 2000);
 }
 
-// ====== RESPONSIBILITIES CONTENT ======
+// ====== RESPONSIBILITIES (simplified for demo) ======
 const speechResponsibilities = {
-  // Examples only — you'll want to expand this based on your spreadsheet
-  '1AC': ['Read pre-written case', 'Speak clearly and confidently', 'Frame the round'],
-  '1A_1NC': ['Flow the 1NC', 'Prep for 2AC', 'Work with your partner'],
-  'Judge_1AC': ['Listen for clarity and organization', 'Note plan structure'],
-  'Judge_2AC': ['Assess how well arguments are extended or refuted']
+  '1AC': ['Present the affirmative case: resolution, harms, inherency, solvency, and plan.'],
+  '1A_1NC': ['Flow the 1NC', 'Prep for 2AC'],
+  'Judge_1AC': ['Listen for clarity and organization']
 };
 
-// ====== RESPONSIBILITIES FUNCTION ======
 function updateResponsibilities(speechLabel) {
   const listEl = document.getElementById('responsibilities-list');
   listEl.innerHTML = '';
 
   if (userRole === 'Judge') {
-    const neutral = speechResponsibilities[`Judge_${speechLabel}`] || ['Observe arguments and evaluate clarity, logic, and evidence.'];
-    neutral.forEach(item => {
+    const judgeResp = speechResponsibilities[`Judge_${speechLabel}`] || ['Observe arguments and take notes.'];
+    judgeResp.forEach(item => {
       const li = document.createElement('li');
       li.textContent = item;
       listEl.appendChild(li);
@@ -170,20 +168,20 @@ function updateResponsibilities(speechLabel) {
   });
 }
 
-// ====== SPEECH BUTTONS LOGIC ======
+// ====== SPEECH BUTTON HANDLING ======
 document.querySelectorAll('.grid button').forEach(button => {
   button.addEventListener('click', () => {
     const label = button.textContent.split(' ')[0];
     const time = speechTimes[label];
 
     if (isPrepRunning) {
-      const confirmSwitch = window.confirm("Prep time is currently running. Are you sure you want to pause Prep Time and start a speech?");
+      const confirmSwitch = window.confirm("Prep time is currently running. Pause and start speech?");
       if (!confirmSwitch) return;
       pausePrepTimer();
     }
 
     if (isSpeechRunning) {
-      const confirmReset = window.confirm("A speech is already being timed. Are you sure you want to switch to a new speech? This will reset the timer.");
+      const confirmReset = window.confirm("A speech is already being timed. Switch speeches?");
       if (!confirmReset) return;
     }
 
@@ -204,8 +202,8 @@ startBtn.addEventListener('click', () => {
 resetBtn.addEventListener('click', () => {
   pauseSpeechTimer();
   speechTimeLeft = 300;
-  document.getElementById('speechTimerContainer').classList.remove('bg-red-600');
   updateSpeechDisplay();
+  document.getElementById('speechTimerContainer').classList.remove('bg-red-600');
 });
 
 speechProgress.addEventListener('input', (e) => {
@@ -215,7 +213,7 @@ speechProgress.addEventListener('input', (e) => {
 
 startPrepBtn.addEventListener('click', () => {
   if (!isPrepRunning && isSpeechRunning) {
-    const confirmStartPrep = window.confirm("A speech is currently being timed. Are you sure you want to use prep time now?");
+    const confirmStartPrep = window.confirm("A speech is running. Use prep time instead?");
     if (!confirmStartPrep) return;
     pauseSpeechTimer();
   }
@@ -225,7 +223,7 @@ startPrepBtn.addEventListener('click', () => {
 
 resetPrepBtn.addEventListener('click', () => {
   pausePrepTimer();
-  prepTimeLeft = 300;
+  prepTimeLeft = timePresets[userLevel].prepTime;
   updatePrepDisplay();
 });
 
@@ -251,7 +249,7 @@ document.addEventListener('click', (event) => {
   }
 });
 
-// ====== ROLE SELECTION SETUP MODAL ======
+// ====== MODAL ROLE/LEVEL CONFIRMATION ======
 document.getElementById('setup-confirm').addEventListener('click', () => {
   userRole = document.getElementById('role-select').value;
   userLevel = document.getElementById('level-select').value;
