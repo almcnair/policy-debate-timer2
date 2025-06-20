@@ -219,7 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // ====== EVENT LISTENERS ======
   document.querySelectorAll('.grid button').forEach(button => {
     button.addEventListener('click', () => {
-      // Use regex to extract the speech label (e.g., "1AC", "2NC", "CX3")
       const match = button.textContent.match(/^[A-Z0-9]+/);
       const label = match ? match[0] : button.textContent.trim();
       const time = speechTimes[label];
@@ -287,76 +286,35 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ====== MODAL SETUP CONFIRMATION ======
-document.getElementById('setup-confirm').addEventListener('click', () => {
-  // Remove focus to close mobile keyboard
-  document.activeElement?.blur();
-document.getElementById('setup-confirm').addEventListener('click', () => {
-  // Remove focus to close mobile keyboard
-  document.activeElement?.blur();
+  document.getElementById('setup-confirm').addEventListener('click', () => {
+    document.activeElement?.blur();
+    document.querySelectorAll('#setup-modal select, #setup-modal input').forEach(el => el.blur());
 
-  // Blur all selects/inputs in modal (extra safety for mobile)
-  document.querySelectorAll('#setup-modal select, #setup-modal input').forEach(el => el.blur());
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Optionally scroll to top
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+    const roleSelect = document.getElementById('role-select');
+    const levelSelect = document.getElementById('level-select');
+    userRole = roleSelect.value;
+    userLevel = levelSelect.value;
 
-  // Grab values
-  const roleSelect = document.getElementById('role-select');
-  const levelSelect = document.getElementById('level-select');
-  userRole = roleSelect.value;
-  userLevel = levelSelect.value;
+    if (!userRole || !userLevel) {
+      alert("Please select both role and division.");
+      return;
+    }
 
-  // Validate (optional)
-  if (!userRole || !userLevel) {
-    alert("Please select both role and division.");
-    return;
-  }
+    speechTimes = timePresets[userLevel].speechTimes;
+    prepTimeLeft = timePresets[userLevel].prepTime;
 
-  // Apply timer presets
-  speechTimes = timePresets[userLevel].speechTimes;
-  prepTimeLeft = timePresets[userLevel].prepTime;
+    const modal = document.getElementById('setup-modal');
+    modal.style.display = 'none';
+    modal.style.pointerEvents = 'none';
 
-  // Hide modal
-  const modal = document.getElementById('setup-modal');
-  modal.style.display = 'none';
+    const backdrop = document.getElementById('modal-backdrop');
+    if (backdrop) backdrop.style.display = 'none';
 
-  // Allow interaction again (just in case)
-  modal.style.pointerEvents = 'none';
-
-  // If you have a backdrop, hide it too
-  const backdrop = document.getElementById('modal-backdrop');
-  if (backdrop) backdrop.style.display = 'none';
-
-  updateSpeechDisplay();
-  updatePrepDisplay();
-});
-  // Grab values
-  const roleSelect = document.getElementById('role-select');
-  const levelSelect = document.getElementById('level-select');
-  userRole = roleSelect.value;
-  userLevel = levelSelect.value;
-
-  // Validate (optional)
-  if (!userRole || !userLevel) {
-    alert("Please select both role and division.");
-    return;
-  }
-
-  // Apply timer presets
-  speechTimes = timePresets[userLevel].speechTimes;
-  prepTimeLeft = timePresets[userLevel].prepTime;
-
-  // Hide modal
-  const modal = document.getElementById('setup-modal');
-  modal.style.display = 'none';
-
-  // Allow interaction again (just in case)
-  modal.style.pointerEvents = 'none';
-
-  updateSpeechDisplay();
-  updatePrepDisplay();
-});
-
+    updateSpeechDisplay();
+    updatePrepDisplay();
+  });
 
   // ====== INIT ======
   updateSpeechDisplay();
