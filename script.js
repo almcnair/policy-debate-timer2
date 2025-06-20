@@ -290,7 +290,46 @@ document.addEventListener('DOMContentLoaded', () => {
 document.getElementById('setup-confirm').addEventListener('click', () => {
   // Remove focus to close mobile keyboard
   document.activeElement?.blur();
+document.getElementById('setup-confirm').addEventListener('click', () => {
+  // Remove focus to close mobile keyboard
+  document.activeElement?.blur();
 
+  // Blur all selects/inputs in modal (extra safety for mobile)
+  document.querySelectorAll('#setup-modal select, #setup-modal input').forEach(el => el.blur());
+
+  // Optionally scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Grab values
+  const roleSelect = document.getElementById('role-select');
+  const levelSelect = document.getElementById('level-select');
+  userRole = roleSelect.value;
+  userLevel = levelSelect.value;
+
+  // Validate (optional)
+  if (!userRole || !userLevel) {
+    alert("Please select both role and division.");
+    return;
+  }
+
+  // Apply timer presets
+  speechTimes = timePresets[userLevel].speechTimes;
+  prepTimeLeft = timePresets[userLevel].prepTime;
+
+  // Hide modal
+  const modal = document.getElementById('setup-modal');
+  modal.style.display = 'none';
+
+  // Allow interaction again (just in case)
+  modal.style.pointerEvents = 'none';
+
+  // If you have a backdrop, hide it too
+  const backdrop = document.getElementById('modal-backdrop');
+  if (backdrop) backdrop.style.display = 'none';
+
+  updateSpeechDisplay();
+  updatePrepDisplay();
+});
   // Grab values
   const roleSelect = document.getElementById('role-select');
   const levelSelect = document.getElementById('level-select');
