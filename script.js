@@ -219,7 +219,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // ====== EVENT LISTENERS ======
   document.querySelectorAll('.grid button').forEach(button => {
     button.addEventListener('click', () => {
-      const label = button.textContent.split(' ')[0];
+      // Use regex to extract the speech label (e.g., "1AC", "2NC", "CX3")
+      const match = button.textContent.match(/^[A-Z0-9]+/);
+      const label = match ? match[0] : button.textContent.trim();
       const time = speechTimes[label];
 
       if (!time) {
@@ -285,19 +287,39 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ====== MODAL SETUP CONFIRMATION ======
-  document.getElementById('setup-confirm').addEventListener('click', () => {
-    userRole = document.getElementById('role-select').value;
-    userLevel = document.getElementById('level-select').value;
+document.getElementById('setup-confirm').addEventListener('click', () => {
+  // Remove focus to close mobile keyboard
+  document.activeElement?.blur();
 
-    speechTimes = timePresets[userLevel].speechTimes;
-    prepTimeLeft = timePresets[userLevel].prepTime;
+  // Grab values
+  const roleSelect = document.getElementById('role-select');
+  const levelSelect = document.getElementById('level-select');
+  userRole = roleSelect.value;
+  userLevel = levelSelect.value;
 
-    document.getElementById('setup-modal').style.display = 'none';
+  // Validate (optional)
+  if (!userRole || !userLevel) {
+    alert("Please select both role and division.");
+    return;
+  }
 
-    updateSpeechDisplay();
-    updatePrepDisplay();
-  });
+  // Apply timer presets
+  speechTimes = timePresets[userLevel].speechTimes;
+  prepTimeLeft = timePresets[userLevel].prepTime;
+
+  // Hide modal
+  const modal = document.getElementById('setup-modal');
+  modal.style.display = 'none';
+
+  // Allow interaction again (just in case)
+  modal.style.pointerEvents = 'none';
+
+  updateSpeechDisplay();
+  updatePrepDisplay();
+});
+
 
   // ====== INIT ======
   updateSpeechDisplay();
   updatePrepDisplay();
+});
