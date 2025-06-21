@@ -14,7 +14,33 @@ document.addEventListener('DOMContentLoaded', () => {
         respPanel.classList.add('translate-x-full');
         respToggle.setAttribute('aria-expanded', 'false');
       }
-    });
+    // ====== SWIPE GESTURE SUPPORT ======
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  function handleSwipeGesture() {
+    const threshold = 50; // minimum px distance for swipe
+    if (touchEndX < touchStartX - threshold) {
+      // Swipe left: close panel
+      respPanel.classList.add('translate-x-full');
+      respToggle.setAttribute('aria-expanded', 'false');
+    }
+    if (touchEndX > touchStartX + threshold) {
+      // Swipe right: open panel
+      respPanel.classList.remove('translate-x-full');
+      respToggle.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  document.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  });
+
+  document.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipeGesture();
+  });
+  });
   }
 
   // ====== RESPONSIBILITIES DATA ======
