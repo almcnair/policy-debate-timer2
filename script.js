@@ -1,6 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
   const respToggle = document.getElementById('responsibilities-toggle');
   const respPanel = document.getElementById('responsibilities-panel');
+const closeBtn = document.getElementById('close-responsibilities');
+if (closeBtn) {
+  closeBtn.addEventListener('click', () => {
+    respPanel.classList.add('translate-x-full');
+    respToggle.setAttribute('aria-expanded', 'false');
+  });
+}
 
   if (respToggle && respPanel) {
     respToggle.setAttribute('aria-expanded', 'false');
