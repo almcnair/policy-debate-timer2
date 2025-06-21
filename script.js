@@ -1,57 +1,54 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // ====== RESPONSIBILITIES PANEL TOGGLE ======
   const respToggle = document.getElementById('responsibilities-toggle');
   const respPanel = document.getElementById('responsibilities-panel');
+
   if (respToggle && respPanel) {
     respToggle.setAttribute('aria-expanded', 'false');
+
+    // Toggle Responsibilities Panel
     respToggle.addEventListener('click', e => {
       e.stopPropagation();
       const isOpen = respPanel.classList.toggle('translate-x-full');
       respToggle.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
     });
-    document.addEventListener('click', e => {
-      if (!respPanel.contains(e.target) && !respToggle.contains(e.target)) {
+
+    // Tap or Click outside to close
+    const closeResponsibilitiesPanel = (e) => {
+      const isOpen = !respPanel.classList.contains('translate-x-full');
+      if (isOpen && !respPanel.contains(e.target) && !respToggle.contains(e.target)) {
         respPanel.classList.add('translate-x-full');
         respToggle.setAttribute('aria-expanded', 'false');
       }
-    // Close Responsibilities panel on mobile tap outside
+    };
+
+    document.addEventListener('click', closeResponsibilitiesPanel);
+    document.addEventListener('touchstart', closeResponsibilitiesPanel);
+
+    // Swipe gesture to open/close
+    let swipeStartX = 0;
+    let swipeEndX = 0;
+
     document.addEventListener('touchstart', (e) => {
-      if (!respPanel.contains(e.target) && !respToggle.contains(e.target)) {
-        respPanel.classList.add('translate-x-full');
-        respToggle.setAttribute('aria-expanded', 'false');
-      }
+      swipeStartX = e.changedTouches[0].screenX;
     });
 
-    // ====== SWIPE GESTURE SUPPORT ======
-  let touchStartX = 0;
-  let touchEndX = 0;
+    document.addEventListener('touchend', (e) => {
+      swipeEndX = e.changedTouches[0].screenX;
+      const threshold = 50;
+      const isPanelOpen = !respPanel.classList.contains('translate-x-full');
 
-  function handleSwipeGesture() {
-    const threshold = 50; // minimum px distance for swipe
-    if (touchEndX < touchStartX - threshold) {
-      // Swipe left: close panel
-      respPanel.classList.add('translate-x-full');
-      respToggle.setAttribute('aria-expanded', 'false');
-    }
-    if (touchEndX > touchStartX + threshold) {
-      // Swipe right: open panel
-      respPanel.classList.remove('translate-x-full');
-      respToggle.setAttribute('aria-expanded', 'true');
-    }
+      if (swipeEndX < swipeStartX - threshold && isPanelOpen) {
+        respPanel.classList.add('translate-x-full');
+        respToggle.setAttribute('aria-expanded', 'false');
+      }
+
+      if (swipeEndX > swipeStartX + threshold && !isPanelOpen) {
+        respPanel.classList.remove('translate-x-full');
+        respToggle.setAttribute('aria-expanded', 'true');
+      }
+    });
   }
 
-  document.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-  });
-
-  document.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipeGesture();
-  });
-  });
-  }
-
-  // ====== RESPONSIBILITIES DATA ======
   const detailedResponsibilities = {
     "1st Affirmative": {
       "1AC": {
@@ -90,7 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // ====== TIME PRESETS ======
   const timePresets = {
     middle: {
       speechTimes: {
@@ -130,7 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const alarmAudio = document.getElementById('alarm-audio');
   const speechButtons = Array.from(document.querySelectorAll('.speech-btn'));
 
-  // Make all speech buttons accessible and mobile-touch-friendly
   speechButtons.forEach(btn => {
     btn.setAttribute('role', 'button');
     btn.setAttribute('tabindex', '0');
@@ -280,7 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ====== EVENT BINDINGS ======
   mainTimer.addEventListener('focus', pauseSpeechTimer);
   mainTimer.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
@@ -416,38 +410,8 @@ document.addEventListener('DOMContentLoaded', () => {
     speechStarted = false;
     updateSpeechDisplay();
     updatePrepDisplay();
-// ====== SWIPE GESTURE SUPPORT FOR RESPONSIBILITIES PANEL ======
-let swipeStartX = 0;
-let swipeEndX = 0;
+  });
 
-document.addEventListener('touchstart', (e) => {
-  swipeStartX = e.changedTouches[0].screenX;
-});
-
-document.addEventListener('touchend', (e) => {
-  swipeEndX = e.changedTouches[0].screenX;
-  const threshold = 50;
-
-  const isPanelOpen = !respPanel.classList.contains('translate-x-full');
-  const swipedLeft = swipeEndX < swipeStartX - threshold;
-  const swipedRight = swipeEndX > swipeStartX + threshold;
-
-  if (swipedLeft && isPanelOpen) {
-    // Swipe left to close
-    respPanel.classList.add('translate-x-full');
-    respToggle.setAttribute('aria-expanded', 'false');
-  }
-
-  if (swipedRight && !isPanelOpen) {
-    // Swipe right to open
-    respPanel.classList.remove('translate-x-full');
-    respToggle.setAttribute('aria-expanded', 'true');
-  }
-});
-  
-});
-
-  // INIT
   updateSpeechDisplay();
   updatePrepDisplay();
 });
