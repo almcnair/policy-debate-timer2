@@ -14,12 +14,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Tap or Click outside to close
     const closeResponsibilitiesPanel = (e) => {
-      const isOpen = !respPanel.classList.contains('translate-x-full');
-      if (isOpen && !respPanel.contains(e.target) && !respToggle.contains(e.target)) {
-        respPanel.classList.add('translate-x-full');
-        respToggle.setAttribute('aria-expanded', 'false');
-      }
-    };
+  const isOpen = !respPanel.classList.contains('translate-x-full');
+  const tappedInsidePanel = respPanel.contains(e.target);
+  const tappedToggleButton = respToggle.contains(e.target);
+
+  if (isOpen && (!tappedToggleButton || tappedInsidePanel)) {
+    respPanel.classList.add('translate-x-full');
+    respToggle.setAttribute('aria-expanded', 'false');
+  }
+};
+
 
     document.addEventListener('click', closeResponsibilitiesPanel);
     document.addEventListener('touchstart', closeResponsibilitiesPanel);
