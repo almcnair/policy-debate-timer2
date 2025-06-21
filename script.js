@@ -3,13 +3,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const respToggle = document.getElementById('responsibilities-toggle');
   const respPanel = document.getElementById('responsibilities-panel');
   if (respToggle && respPanel) {
+    respToggle.setAttribute('aria-expanded', 'false');
     respToggle.addEventListener('click', e => {
       e.stopPropagation();
-      respPanel.classList.toggle('translate-x-full');
+      const isOpen = respPanel.classList.toggle('translate-x-full');
+      respToggle.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
     });
     document.addEventListener('click', e => {
       if (!respPanel.contains(e.target) && !respToggle.contains(e.target)) {
         respPanel.classList.add('translate-x-full');
+        respToggle.setAttribute('aria-expanded', 'false');
       }
     });
   }
@@ -73,26 +76,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // ====== SPEECH ORDER ======
   const speechOrder = [
     '1AC', 'CX1', '1NC', 'CX2', '2AC', 'CX3', '2NC', 'CX4',
     '1NR', '1AR', '2NR', '2AR'
   ];
 
-  // ====== TIMER VARIABLES ======
-  let speechTimer;
-  let speechTimeLeft = 300;
-  let isSpeechRunning = false;
-  let prepTimer;
-  let prepTimeLeft = 300;
-  let isPrepRunning = false;
-  let userRole = '';
-  let userLevel = '';
-  let speechTimes = {};
-  let currentSpeechIndex = -1;
-  let speechStarted = false;
+  let speechTimer, prepTimer;
+  let speechTimeLeft = 300, prepTimeLeft = 300;
+  let isSpeechRunning = false, isPrepRunning = false;
+  let userRole = '', userLevel = '';
+  let speechTimes = {}, currentSpeechIndex = -1, speechStarted = false;
 
-  // ====== DOM ELEMENTS ======
   const mainTimer = document.getElementById('main-timer');
   const startBtn = document.getElementById('start-btn');
   const resetBtn = document.getElementById('reset-btn');
@@ -102,7 +96,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const alarmAudio = document.getElementById('alarm-audio');
   const speechButtons = Array.from(document.querySelectorAll('.speech-btn'));
 
-  // ====== UTILITIES ======
+  // Make all speech buttons accessible and mobile-touch-friendly
+  speechButtons.forEach(btn => {
+    btn.setAttribute('role', 'button');
+    btn.setAttribute('tabindex', '0');
+    btn.style.touchAction = 'manipulation';
+  });
+
   function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -111,9 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function parseTimeInput(input) {
     const trimmed = input.trim();
-    if (/^\d+$/.test(trimmed)) {
-      return parseInt(trimmed, 10) * 60;
-    }
+    if (/^\d+$/.test(trimmed)) return parseInt(trimmed, 10) * 60;
     const match = trimmed.match(/^(\d{1,2}):([0-5]?[0-9])$/);
     if (!match) return null;
     return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
@@ -139,28 +137,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = speechButtons.find(b => b.dataset.label === label);
     if (btn) {
       btn.classList.add('bg-gray-400', 'text-gray-700', 'cursor-not-allowed');
-      btn.classList.remove('bg-blue-500', 'text-white', 'hover:bg-blue-600');
+      btn.classList.remove('bg-blue-500', 'bg-sky-600', 'bg-purple-500', 'text-white');
       btn.disabled = true;
     }
   }
 
   function grayOutPreviousSpeechButtons(index) {
-    for (let i = 0; i <= index; i++) {
-      grayOutSpeechButton(speechOrder[i]);
-    }
+    for (let i = 0; i <= index; i++) grayOutSpeechButton(speechOrder[i]);
   }
 
   function resetSpeechButtons() {
     speechButtons.forEach(btn => {
       btn.classList.remove('bg-gray-400', 'text-gray-700', 'cursor-not-allowed');
-      btn.classList.add('bg-blue-500', 'text-white');
+      btn.classList.add('text-white');
       btn.disabled = false;
     });
   }
 
-  // ====== SPEECH TIMER ======
   function updateSpeechDisplay() {
     mainTimer.textContent = formatTime(speechTimeLeft);
+  }
+
+  function updatePrepDisplay() {
+    prepTimerDisplay.textContent = formatTime(prepTimeLeft);
   }
 
   function startSpeechTimer() {
@@ -174,9 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         speechTimeLeft = 0;
         updateSpeechDisplay();
         playAlarmAndFlash();
-        if (currentSpeechIndex >= 0) {
-          grayOutSpeechButton(speechOrder[currentSpeechIndex]);
-        }
+        if (currentSpeechIndex >= 0) grayOutSpeechButton(speechOrder[currentSpeechIndex]);
         startBtn.disabled = true;
         return;
       }
@@ -189,11 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
     isSpeechRunning = false;
     startBtn.textContent = currentSpeechIndex === -1 ? 'Start 1AC' : 'Start';
     clearInterval(speechTimer);
-  }
-
-  // ====== PREP TIMER ======
-  function updatePrepDisplay() {
-    prepTimerDisplay.textContent = formatTime(prepTimeLeft);
   }
 
   function startPrepTimer() {
@@ -219,7 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
     clearInterval(prepTimer);
   }
 
-  // ====== RESPONSIBILITIES ======
   function updateResponsibilities(currentSpeechLabel) {
     const roleNameMap = {
       "1A": "1st Affirmative",
@@ -255,11 +246,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ====== EDITABLE TIMER HANDLERS ======
-  mainTimer.addEventListener('focus', () => {
-    pauseSpeechTimer();
-  });
-  mainTimer.addEventListener('keydown', (e) => {
+  // ====== EVENT BINDINGS ======
+  mainTimer.addEventListener('focus', pauseSpeechTimer);
+  mainTimer.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
       e.preventDefault();
       mainTimer.blur();
@@ -277,10 +266,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  prepTimerDisplay.addEventListener('focus', () => {
-    pausePrepTimer();
-  });
-  prepTimerDisplay.addEventListener('keydown', (e) => {
+  prepTimerDisplay.addEventListener('focus', pausePrepTimer);
+  prepTimerDisplay.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
       e.preventDefault();
       prepTimerDisplay.blur();
@@ -298,7 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ====== EVENT LISTENERS ======
   speechButtons.forEach((button, idx) => {
     button.addEventListener('click', () => {
       const label = button.dataset.label;
@@ -308,14 +294,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       if (isPrepRunning) {
-        const confirmSwitch = window.confirm("Prep time is running. Pause and start speech?");
-        if (!confirmSwitch) return;
+        if (!window.confirm("Prep is running. Pause and start speech?")) return;
         pausePrepTimer();
       }
-      if (isSpeechRunning) {
-        const confirmReset = window.confirm("Speech is running. Switch speeches?");
-        if (!confirmReset) return;
-      }
+      if (isSpeechRunning && !window.confirm("Speech is running. Switch speeches?")) return;
       pauseSpeechTimer();
       speechTimeLeft = time;
       updateSpeechDisplay();
@@ -354,7 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   resetBtn.addEventListener('click', () => {
     pauseSpeechTimer();
-    let resetLabel = currentSpeechIndex === -1 ? '1AC' : speechOrder[currentSpeechIndex];
+    const resetLabel = currentSpeechIndex === -1 ? '1AC' : speechOrder[currentSpeechIndex];
     speechTimeLeft = speechTimes[resetLabel] || 300;
     updateSpeechDisplay();
     document.getElementById('speechTimerContainer').classList.remove('bg-red-600');
@@ -365,8 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (startPrepBtn) {
     startPrepBtn.addEventListener('click', () => {
       if (!isPrepRunning && isSpeechRunning) {
-        const confirmStartPrep = window.confirm("A speech is running. Use prep instead?");
-        if (!confirmStartPrep) return;
+        if (!window.confirm("Speech is running. Use prep instead?")) return;
         pauseSpeechTimer();
       }
       isPrepRunning ? pausePrepTimer() : startPrepTimer();
@@ -382,9 +363,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.getElementById('setup-confirm').addEventListener('click', () => {
-    document.activeElement?.blur();
-    document.querySelectorAll('#setup-modal select, #setup-modal input').forEach(el => el.blur());
-    window.scrollTo({ top: 0, behavior: 'smooth' });
     const roleSelect = document.getElementById('role-select');
     const levelSelect = document.getElementById('level-select');
     userRole = roleSelect.value;
@@ -395,76 +373,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     speechTimes = timePresets[userLevel].speechTimes;
     prepTimeLeft = timePresets[userLevel].prepTime;
-    const modal = document.getElementById('setup-modal');
-    modal.style.display = 'none';
-    modal.style.pointerEvents = 'none';
-    const backdrop = document.getElementById('modal-backdrop');
-    if (backdrop) backdrop.style.display = 'none';
+    document.getElementById('setup-modal').style.display = 'none';
+    document.getElementById('modal-backdrop').style.display = 'none';
     resetSpeechButtons();
     currentSpeechIndex = -1;
     startBtn.textContent = 'Start 1AC';
     startBtn.disabled = false;
     speechStarted = false;
-    // ADDITION (bottom of the DOMContentLoaded block)
-function parseTimeInput(input) {
-  const trimmed = input.trim();
-  if (/^\d+$/.test(trimmed)) {
-    return parseInt(trimmed, 10) * 60;
-  }
-  const match = trimmed.match(/^(\d{1,2}):([0-5]?[0-9])$/);
-  if (!match) return null;
-  return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
-}
-
-// === Editable Speech Timer Handling ===
-mainTimer.addEventListener('focus', () => {
-  pauseSpeechTimer();
-});
-mainTimer.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    mainTimer.blur();
-  }
-});
-mainTimer.addEventListener('blur', () => {
-  const newTime = parseTimeInput(mainTimer.textContent);
-  if (newTime !== null) {
-    speechTimeLeft = newTime;
-    updateSpeechDisplay();
-    startSpeechTimer();
-  } else {
-    updateSpeechDisplay();
-    alert('Invalid format. Use MM:SS or a number like 3 for 3:00');
-  }
-});
-
-// === Editable Prep Timer Handling ===
-prepTimerDisplay.addEventListener('focus', () => {
-  pausePrepTimer();
-});
-prepTimerDisplay.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    prepTimerDisplay.blur();
-  }
-});
-prepTimerDisplay.addEventListener('blur', () => {
-  const newTime = parseTimeInput(prepTimerDisplay.textContent);
-  if (newTime !== null) {
-    prepTimeLeft = newTime;
-    updatePrepDisplay();
-    startPrepTimer();
-  } else {
-    updatePrepDisplay();
-    alert('Invalid format. Use MM:SS or a number like 5 for 5:00');
-  }
-});
-
     updateSpeechDisplay();
     updatePrepDisplay();
   });
 
-  // ====== INIT ======
+  // INIT
   updateSpeechDisplay();
   updatePrepDisplay();
 });
