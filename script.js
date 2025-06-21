@@ -408,7 +408,36 @@ document.addEventListener('DOMContentLoaded', () => {
     speechStarted = false;
     updateSpeechDisplay();
     updatePrepDisplay();
-  });
+// ====== SWIPE GESTURE SUPPORT FOR RESPONSIBILITIES PANEL ======
+let swipeStartX = 0;
+let swipeEndX = 0;
+
+document.addEventListener('touchstart', (e) => {
+  swipeStartX = e.changedTouches[0].screenX;
+});
+
+document.addEventListener('touchend', (e) => {
+  swipeEndX = e.changedTouches[0].screenX;
+  const threshold = 50;
+
+  const isPanelOpen = !respPanel.classList.contains('translate-x-full');
+  const swipedLeft = swipeEndX < swipeStartX - threshold;
+  const swipedRight = swipeEndX > swipeStartX + threshold;
+
+  if (swipedLeft && isPanelOpen) {
+    // Swipe left to close
+    respPanel.classList.add('translate-x-full');
+    respToggle.setAttribute('aria-expanded', 'false');
+  }
+
+  if (swipedRight && !isPanelOpen) {
+    // Swipe right to open
+    respPanel.classList.remove('translate-x-full');
+    respToggle.setAttribute('aria-expanded', 'true');
+  }
+});
+  
+});
 
   // INIT
   updateSpeechDisplay();
