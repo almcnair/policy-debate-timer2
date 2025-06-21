@@ -405,6 +405,61 @@ document.addEventListener('DOMContentLoaded', () => {
     startBtn.textContent = 'Start 1AC';
     startBtn.disabled = false;
     speechStarted = false;
+    // ADDITION (bottom of the DOMContentLoaded block)
+function parseTimeInput(input) {
+  const trimmed = input.trim();
+  if (/^\d+$/.test(trimmed)) {
+    return parseInt(trimmed, 10) * 60;
+  }
+  const match = trimmed.match(/^(\d{1,2}):([0-5]?[0-9])$/);
+  if (!match) return null;
+  return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
+}
+
+// === Editable Speech Timer Handling ===
+mainTimer.addEventListener('focus', () => {
+  pauseSpeechTimer();
+});
+mainTimer.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    mainTimer.blur();
+  }
+});
+mainTimer.addEventListener('blur', () => {
+  const newTime = parseTimeInput(mainTimer.textContent);
+  if (newTime !== null) {
+    speechTimeLeft = newTime;
+    updateSpeechDisplay();
+    startSpeechTimer();
+  } else {
+    updateSpeechDisplay();
+    alert('Invalid format. Use MM:SS or a number like 3 for 3:00');
+  }
+});
+
+// === Editable Prep Timer Handling ===
+prepTimerDisplay.addEventListener('focus', () => {
+  pausePrepTimer();
+});
+prepTimerDisplay.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    prepTimerDisplay.blur();
+  }
+});
+prepTimerDisplay.addEventListener('blur', () => {
+  const newTime = parseTimeInput(prepTimerDisplay.textContent);
+  if (newTime !== null) {
+    prepTimeLeft = newTime;
+    updatePrepDisplay();
+    startPrepTimer();
+  } else {
+    updatePrepDisplay();
+    alert('Invalid format. Use MM:SS or a number like 5 for 5:00');
+  }
+});
+
     updateSpeechDisplay();
     updatePrepDisplay();
   });
