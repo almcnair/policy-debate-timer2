@@ -109,6 +109,16 @@ document.addEventListener('DOMContentLoaded', () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
 
+  function parseTimeInput(input) {
+    const trimmed = input.trim();
+    if (/^\d+$/.test(trimmed)) {
+      return parseInt(trimmed, 10) * 60;
+    }
+    const match = trimmed.match(/^(\d{1,2}):([0-5]?[0-9])$/);
+    if (!match) return null;
+    return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
+  }
+
   function playAlarmAndFlash() {
     if (alarmAudio) {
       alarmAudio.currentTime = 0;
@@ -148,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ====== SPEECH TIMER FUNCTIONS ======
+  // ====== SPEECH TIMER ======
   function updateSpeechDisplay() {
     mainTimer.textContent = formatTime(speechTimeLeft);
   }
@@ -164,7 +174,6 @@ document.addEventListener('DOMContentLoaded', () => {
         speechTimeLeft = 0;
         updateSpeechDisplay();
         playAlarmAndFlash();
-        // Gray out completed speech button
         if (currentSpeechIndex >= 0) {
           grayOutSpeechButton(speechOrder[currentSpeechIndex]);
         }
@@ -182,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
     clearInterval(speechTimer);
   }
 
-  // ====== PREP TIMER FUNCTIONS ======
+  // ====== PREP TIMER ======
   function updatePrepDisplay() {
     prepTimerDisplay.textContent = formatTime(prepTimeLeft);
   }
@@ -210,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
     clearInterval(prepTimer);
   }
 
-  // ====== RESPONSIBILITIES FUNCTION ======
+  // ====== RESPONSIBILITIES ======
   function updateResponsibilities(currentSpeechLabel) {
     const roleNameMap = {
       "1A": "1st Affirmative",
@@ -246,9 +255,50 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ====== EVENT LISTENERS ======
+  // ====== EDITABLE TIMER HANDLERS ======
+  mainTimer.addEventListener('focus', () => {
+    pauseSpeechTimer();
+  });
+  mainTimer.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      mainTimer.blur();
+    }
+  });
+  mainTimer.addEventListener('blur', () => {
+    const newTime = parseTimeInput(mainTimer.textContent);
+    if (newTime !== null) {
+      speechTimeLeft = newTime;
+      updateSpeechDisplay();
+      startSpeechTimer();
+    } else {
+      updateSpeechDisplay();
+      alert('Invalid format. Use MM:SS or a number like 3 (for 3:00).');
+    }
+  });
 
-  // Speech Buttons
+  prepTimerDisplay.addEventListener('focus', () => {
+    pausePrepTimer();
+  });
+  prepTimerDisplay.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      prepTimerDisplay.blur();
+    }
+  });
+  prepTimerDisplay.addEventListener('blur', () => {
+    const newTime = parseTimeInput(prepTimerDisplay.textContent);
+    if (newTime !== null) {
+      prepTimeLeft = newTime;
+      updatePrepDisplay();
+      startPrepTimer();
+    } else {
+      updatePrepDisplay();
+      alert('Invalid format. Use MM:SS or a number like 5 (for 5:00).');
+    }
+  });
+
+  // ====== EVENT LISTENERS ======
   speechButtons.forEach((button, idx) => {
     button.addEventListener('click', () => {
       const label = button.dataset.label;
@@ -280,10 +330,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Start Button
   startBtn.addEventListener('click', () => {
     if (!speechStarted) {
-      // Start 1AC if no speech selected yet
       const label = '1AC';
       const time = speechTimes[label];
       if (!time) {
@@ -304,7 +352,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Reset Button
   resetBtn.addEventListener('click', () => {
     pauseSpeechTimer();
     let resetLabel = currentSpeechIndex === -1 ? '1AC' : speechOrder[currentSpeechIndex];
@@ -315,7 +362,6 @@ document.addEventListener('DOMContentLoaded', () => {
     startBtn.textContent = currentSpeechIndex === -1 ? 'Start 1AC' : 'Start';
   });
 
-  // Prep Buttons
   if (startPrepBtn) {
     startPrepBtn.addEventListener('click', () => {
       if (!isPrepRunning && isSpeechRunning) {
@@ -326,6 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
       isPrepRunning ? pausePrepTimer() : startPrepTimer();
     });
   }
+
   if (resetPrepBtn) {
     resetPrepBtn.addEventListener('click', () => {
       pausePrepTimer();
@@ -334,7 +381,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ====== MODAL SETUP CONFIRMATION ======
   document.getElementById('setup-confirm').addEventListener('click', () => {
     document.activeElement?.blur();
     document.querySelectorAll('#setup-modal select, #setup-modal input').forEach(el => el.blur());
