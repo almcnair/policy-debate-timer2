@@ -14,6 +14,14 @@ document.addEventListener('DOMContentLoaded', () => {
         respPanel.classList.add('translate-x-full');
         respToggle.setAttribute('aria-expanded', 'false');
       }
+    // Close Responsibilities panel on mobile tap outside
+    document.addEventListener('touchstart', (e) => {
+      if (!respPanel.contains(e.target) && !respToggle.contains(e.target)) {
+        respPanel.classList.add('translate-x-full');
+        respToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+
     // ====== SWIPE GESTURE SUPPORT ======
   let touchStartX = 0;
   let touchEndX = 0;
