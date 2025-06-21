@@ -42,7 +42,8 @@
   <!-- Main Timer Section -->
   <div id="speechTimerContainer" class="bg-gray-800 rounded-lg shadow-lg p-8 mt-8 flex flex-col items-center">
     <div class="flex items-center space-x-4 mb-4">
-      <span id="main-timer" class="text-6xl font-mono text-white transition-colors duration-200">5:00</span>
+      <span id="main-timer" contenteditable="true" class="text-6xl font-mono text-white transition-colors duration-200 outline-none focus:ring-2 ring-blue-400 rounded px-2" aria-label="Edit Speech Timer" title="Click to edit time">5:00</span>
+
     </div>
     <div class="flex space-x-4 mt-4">
       <button id="start-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded">Start 1AC</button>
@@ -69,7 +70,8 @@
   <!-- Prep Timer Section -->
   <div class="bg-gray-800 rounded-lg shadow-lg p-6 mt-8 flex flex-col items-center">
     <div class="flex items-center space-x-4 mb-4">
-      <span id="prep-timer" class="text-3xl font-mono text-white">5:00</span>
+      <span id="prep-timer" contenteditable="true" class="text-3xl font-mono text-white outline-none focus:ring-2 ring-yellow-400 rounded px-2" aria-label="Edit Prep Timer" title="Click to edit time">5:00</span>
+
     </div>
     <div class="flex space-x-4">
       <button id="start-prep-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded">Start Prep</button>
