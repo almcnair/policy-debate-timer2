@@ -129,13 +129,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const speechButtons = Array.from(document.querySelectorAll('.speech-btn'));
   function highlightCurrentSpeechButton(label) {
-    speechButtons.forEach(btn => {
-      if (btn.dataset.label === label) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
+speechButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const label = button.dataset.label;
+      const newIndex = speechOrder.indexOf(label);
+      if (!speechTimes[label]) return;
+
+      const isGrayedOut = button.classList.contains('opacity-50');
+      const isDifferentSpeech = label !== speechOrder[currentSpeechIndex];
+      let confirmRestart = true;
+
+      if (isGrayedOut) {
+        confirmRestart = confirm('Are you sure you want to restart this speech? Your timer will reset.');
+      } else if (isSpeechRunning && isDifferentSpeech) {
+        confirmRestart = confirm('Are you sure you want to start a new speech? Your timer will reset.');
       }
+
+      if (!confirmRestart) return;
+
+      pauseSpeechTimer();
+      speechTimeLeft = speechTimes[label];
+      currentSpeechIndex = newIndex;
+      updateSpeechDisplay();
+      highlightCurrentSpeechButton(label);
+      updateResponsibilitiesPanel(label);
+      disablePreviousSpeeches(newIndex);
+      speechButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      startSpeechTimer();
+      startBtn.disabled = false;
+      startBtn.textContent = 'Pause';
+      speechStarted = true;
     });
+  });
   }
 
   const speechOrder = ['1AC', 'CX1', '1NC', 'CX2', '2AC', 'CX3', '2NC', 'CX4', '1NR', '1AR', '2NR', '2AR'];
@@ -175,6 +201,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1000);
   }
 
+  
+  const alarmAudio = document.getElementById('alarm-audio');
+
+  function handleSpeechEnd(label) {
+    const button = speechButtons.find(btn => btn.dataset.label === label);
+    if (button) {
+      button.classList.add('opacity-50', 'cursor-not-allowed');
+      button.disabled = true;
+    }
+    alarmAudio.play();
+  }
+
+  function disablePreviousSpeeches(index) {
+    for (let i = 0; i < index; i++) {
+      const btn = speechButtons.find(b => b.dataset.label === speechOrder[i]);
+      if (btn) {
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+        btn.disabled = true;
+      }
+    }
+  }
+
   startBtn.addEventListener('click', () => {
     if (!speechStarted) {
       const initialSpeech = '1AC';
@@ -184,6 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
       highlightCurrentSpeechButton(initialSpeech);
       updateResponsibilitiesPanel(initialSpeech);
       speechStarted = true;
+      disablePreviousSpeeches(0);
     }
     isSpeechRunning ? pauseSpeechTimer() : startSpeechTimer();
   });
@@ -191,13 +240,27 @@ document.addEventListener('DOMContentLoaded', () => {
   speechButtons.forEach(button => {
     button.addEventListener('click', () => {
       const label = button.dataset.label;
+      const newIndex = speechOrder.indexOf(label);
       if (!speechTimes[label]) return;
+
+      const isDisabled = button.disabled;
+      const confirmRestart = isDisabled
+        ? confirm('Are you sure you want to restart this speech? Your timer will reset.')
+        : (isSpeechRunning && label !== speechOrder[currentSpeechIndex])
+          ? confirm('Are you sure you want to start a new speech? Your timer will reset.')
+          : true;
+
+      if (!confirmRestart) return;
+
       pauseSpeechTimer();
       speechTimeLeft = speechTimes[label];
-      currentSpeechIndex = speechOrder.indexOf(label);
+      currentSpeechIndex = newIndex;
       updateSpeechDisplay();
       highlightCurrentSpeechButton(label);
       updateResponsibilitiesPanel(label);
+      disablePreviousSpeeches(newIndex);
+      speechButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
       startSpeechTimer();
       startBtn.disabled = false;
       startBtn.textContent = 'Pause';
@@ -218,5 +281,14 @@ document.addEventListener('DOMContentLoaded', () => {
     updateSpeechDisplay();
   });
 
+document.getElementById('reset-btn').addEventListener('click', () => {
+    if (currentSpeechIndex !== -1) {
+      pauseSpeechTimer();
+      const currentLabel = speechOrder[currentSpeechIndex];
+      speechTimeLeft = speechTimes[currentLabel];
+      updateSpeechDisplay();
+      startSpeechTimer();
+    }
+  });
   updateSpeechDisplay(); // Init display
 });
