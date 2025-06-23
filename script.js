@@ -1,6 +1,6 @@
 // === script.js ===
 document.addEventListener('DOMContentLoaded', () => {
-  const responsibilitiesData = { /* ... same responsibilitiesData from before ... */ };
+  const responsibilitiesData = { /* ... existing responsibilitiesData ... */ };
   const speechOrder = ['1AC', 'CX1', '1NC', 'CX2', '2AC', 'CX3', '2NC', 'CX4', '1NR', '1AR', '2NR', '2AR'];
   let currentSpeechIndex = -1;
   let speechTimes = {};
@@ -18,9 +18,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const levelSelect = document.getElementById('level-select');
   const roleSelect = document.getElementById('role-select');
   const setupConfirm = document.getElementById('setup-confirm');
+  const setupModal = document.getElementById('setup-modal');
+  const setupClose = document.getElementById('setup-close');
+  const modalBackdrop = document.getElementById('modal-backdrop');
   const divisionDisplay = document.createElement('div');
 
-  // === Setup UI and Modal ===
+  // Auto-select default on load
   levelSelect.value = 'middle';
   roleSelect.value = '1A';
 
@@ -150,10 +153,9 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     speechTimes = timePresets[level];
-    document.getElementById('setup-modal').style.display = 'none';
-    document.getElementById('modal-backdrop').style.display = 'none';
+    setupModal.style.display = 'none';
+    modalBackdrop.style.display = 'none';
 
-    // Add top-left role/div display
     divisionDisplay.textContent = `${level === 'middle' ? 'Middle School' : 'High School'} | ${role}`;
     divisionDisplay.className = 'fixed top-2 left-2 text-sm text-white bg-gray-700 px-2 py-1 rounded cursor-pointer z-50';
     divisionDisplay.onclick = () => {
@@ -161,15 +163,28 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!confirm('Do you want to stop your current speech timer?')) return;
         pauseSpeechTimer();
       }
-      document.getElementById('setup-modal').style.display = 'block';
-      document.getElementById('modal-backdrop').style.display = 'block';
+      setupModal.style.display = 'block';
+      modalBackdrop.style.display = 'block';
     };
     document.body.appendChild(divisionDisplay);
 
     updateSpeechDisplay();
   });
 
-  // Close responsibilities panel
+  setupClose.addEventListener('click', () => {
+    levelSelect.value = 'middle';
+    roleSelect.value = '1A';
+    setupModal.style.display = 'none';
+    modalBackdrop.style.display = 'none';
+  });
+
+  modalBackdrop.addEventListener('click', () => {
+    levelSelect.value = 'middle';
+    roleSelect.value = '1A';
+    setupModal.style.display = 'none';
+    modalBackdrop.style.display = 'none';
+  });
+
   closeBtn.addEventListener('click', () => {
     respPanel.classList.add('translate-x-full');
     respToggle.setAttribute('aria-expanded', 'false');
