@@ -1,6 +1,5 @@
 // === script.js ===
 document.addEventListener('DOMContentLoaded', () => {
-  const responsibilitiesData = { /* ... existing responsibilitiesData ... */ };
   const speechOrder = ['1AC', 'CX1', '1NC', 'CX2', '2AC', 'CX3', '2NC', 'CX4', '1NR', '1AR', '2NR', '2AR'];
   let currentSpeechIndex = -1;
   let speechTimes = {};
