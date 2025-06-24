@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalBackdrop = document.getElementById('modal-backdrop');
   const divisionDisplay = document.createElement('div');
 
-  // Auto-select default on load
   levelSelect.value = 'middle';
   roleSelect.value = '1A';
 
@@ -35,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function pauseSpeechTimer() {
     isSpeechRunning = false;
     clearInterval(speechTimer);
-    startBtn.textContent = currentSpeechIndex === -1 ? 'Start 1AC' : 'Start';
+    startBtn.textContent = currentSpeechIndex === -1 ? 'Start 1AC' : `Start ${speechOrder[currentSpeechIndex]}`;
   }
 
   function startSpeechTimer() {
@@ -58,17 +57,26 @@ document.addEventListener('DOMContentLoaded', () => {
   function handleSpeechEnd(label) {
     const button = speechButtons.find(btn => btn.dataset.label === label);
     if (button) {
-      button.classList.add('opacity-50', 'cursor-not-allowed');
+      button.classList.add('opacity-50', 'cursor-not-allowed', 'line-through');
       button.disabled = true;
     }
     alarmAudio.play();
+    const nextIndex = currentSpeechIndex + 1;
+    if (nextIndex < speechOrder.length) {
+      const nextLabel = speechOrder[nextIndex];
+      startBtn.textContent = `Start ${nextLabel}`;
+      startBtn.onclick = () => {
+        handleSpeechButton(document.querySelector(`[data-label="${nextLabel}"]`));
+        startBtn.onclick = null;
+      };
+    }
   }
 
   function disablePreviousSpeeches(index) {
     for (let i = 0; i < index; i++) {
       const btn = speechButtons.find(b => b.dataset.label === speechOrder[i]);
       if (btn) {
-        btn.classList.add('opacity-50', 'cursor-not-allowed');
+        btn.classList.add('opacity-50', 'cursor-not-allowed', 'line-through');
         btn.disabled = true;
       }
     }
@@ -97,7 +105,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const isGrayedOut = button.classList.contains('opacity-50');
     const isDifferentSpeech = label !== speechOrder[currentSpeechIndex];
 
-    if (isGrayedOut || (isSpeechRunning && isDifferentSpeech)) {
+    if (isGrayedOut) {
+      const confirmed = confirm('Are you sure you want to restart this speech? The timer will reset.');
+      if (!confirmed) return;
+    } else if (isSpeechRunning && isDifferentSpeech) {
       const confirmed = confirm('Are you sure you want to start a new speech? Your timer will reset.');
       if (!confirmed) return;
     }
@@ -113,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     startSpeechTimer();
     startBtn.disabled = false;
     startBtn.textContent = 'Pause';
+    startBtn.onclick = null;
     speechStarted = true;
   }
 
@@ -170,29 +182,35 @@ document.addEventListener('DOMContentLoaded', () => {
     updateSpeechDisplay();
   });
 
-  setupClose.addEventListener('click', () => {
+  function autoSetupIfDismissed() {
     levelSelect.value = 'middle';
     roleSelect.value = '1A';
+    setupConfirm.click();
+  }
+
+  setupClose.addEventListener('click', () => {
     setupModal.style.display = 'none';
     modalBackdrop.style.display = 'none';
+    autoSetupIfDismissed();
   });
 
   modalBackdrop.addEventListener('click', () => {
-    levelSelect.value = 'middle';
-    roleSelect.value = '1A';
     setupModal.style.display = 'none';
     modalBackdrop.style.display = 'none';
+    autoSetupIfDismissed();
   });
 
   closeBtn.addEventListener('click', () => {
     respPanel.classList.add('translate-x-full');
     respToggle.setAttribute('aria-expanded', 'false');
   });
+
   respToggle.addEventListener('click', e => {
     e.stopPropagation();
     const isOpen = respPanel.classList.toggle('translate-x-full');
     respToggle.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
   });
+
   document.addEventListener('click', e => {
     if (!respPanel.contains(e.target) && !respToggle.contains(e.target)) {
       respPanel.classList.add('translate-x-full');
