@@ -155,9 +155,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  mainTimer.addEventListener('focus', () => {
-    pauseSpeechTimer();
-  });
+mainTimer.addEventListener('focus', () => {
+  if (isSpeechRunning && !confirm('Are you sure you want to pause the speech timer?')) {
+    mainTimer.blur(); // Exit editing
+    return;
+  }
+  pauseSpeechTimer();
+});
+
 
   function parseTimeString(str) {
     const match = str.match(/^(\d{1,2}):(\d{2})$/);
@@ -258,3 +263,106 @@ document.addEventListener('DOMContentLoaded', () => {
 
   updateSpeechDisplay();
 });
+
+const prepTimerEl = document.getElementById('prep-timer');
+let prepTimeLeft = 300;
+let prepTimer = null;
+let isPrepRunning = false;
+
+function parseTime(str) {
+  const match = str.match(/^(\d{1,2}):(\d{2})$/);
+  if (!match) return null;
+  return parseInt(match[1]) * 60 + parseInt(match[2]);
+}
+
+function tryParsePrepTimer() {
+  const parsed = parseTime(prepTimerEl.textContent.trim());
+  if (parsed !== null) {
+    prepTimeLeft = parsed;
+    updatePrepDisplay();
+    startPrepTimer();
+  } else {
+    updatePrepDisplay();
+  }
+}
+
+function updatePrepDisplay() {
+  const m = Math.floor(prepTimeLeft / 60);
+  const s = prepTimeLeft % 60;
+  prepTimerEl.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+function startPrepTimer() {
+  if (isPrepRunning) return;
+  isPrepRunning = true;
+  prepTimer = setInterval(() => {
+    if (--prepTimeLeft <= 0) {
+      clearInterval(prepTimer);
+      isPrepRunning = false;
+      prepTimeLeft = 0;
+      updatePrepDisplay();
+      alarmAudio.play();
+    } else {
+      updatePrepDisplay();
+    }
+  }, 1000);
+}
+
+function pausePrepTimer() {
+  clearInterval(prepTimer);
+  isPrepRunning = false;
+}
+
+document.getElementById('start-prep-btn').addEventListener('click', () => {
+  if (isPrepRunning) {
+    if (confirm('Are you sure you want to pause the prep timer?')) pausePrepTimer();
+  } else {
+    startPrepTimer();
+  }
+});
+
+document.getElementById('reset-prep-btn').addEventListener('click', () => {
+  if (confirm('Are you sure you want to reset the prep timer?')) {
+    pausePrepTimer();
+    prepTimeLeft = 300;
+    updatePrepDisplay();
+  }
+});
+
+prepTimerEl.addEventListener('focus', () => {
+  if (isPrepRunning && !confirm('Are you sure you want to pause the prep timer?')) {
+    prepTimerEl.blur();
+  } else {
+    pausePrepTimer();
+  }
+});
+
+prepTimerEl.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    prepTimerEl.blur();
+    tryParsePrepTimer();
+  }
+});
+
+document.addEventListener('click', e => {
+  if (e.target !== prepTimerEl && document.activeElement === prepTimerEl) {
+    prepTimerEl.blur();
+    tryParsePrepTimer();
+  }
+});
+
+document.addEventListener('click', () => {
+  if (!alarmAudio.paused) {
+    alarmAudio.pause();
+    alarmAudio.currentTime = 0;
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' && !alarmAudio.paused) {
+    alarmAudio.pause();
+    alarmAudio.currentTime = 0;
+  }
+});
+
