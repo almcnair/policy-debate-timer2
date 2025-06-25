@@ -155,6 +155,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  mainTimer.addEventListener('focus', () => {
+    pauseSpeechTimer();
+  });
+
+  function parseTimeString(str) {
+    const match = str.match(/^(\d{1,2}):(\d{2})$/);
+    if (!match) return null;
+    const mins = parseInt(match[1], 10);
+    const secs = parseInt(match[2], 10);
+    return mins * 60 + secs;
+  }
+
+  function tryParseMainTimer() {
+    const parsed = parseTimeString(mainTimer.textContent.trim());
+    if (parsed !== null) {
+      speechTimeLeft = parsed;
+      updateSpeechDisplay();
+      startSpeechTimer();
+    } else {
+      updateSpeechDisplay(); // fallback if parse fails
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    if (e.target !== mainTimer && document.activeElement === mainTimer) {
+      mainTimer.blur();
+      tryParseMainTimer();
+    }
+  });
+
+  mainTimer.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      mainTimer.blur();
+      tryParseMainTimer();
+    }
+  });
+
   setupConfirm.addEventListener('click', () => {
     const level = levelSelect.value;
     const role = roleSelect.value;
