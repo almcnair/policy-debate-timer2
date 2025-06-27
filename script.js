@@ -123,6 +123,14 @@ function disablePreviousSpeeches(index) {
     }
   }
 }
+function enableLaterSpeeches(index) {
+  for (let i = index + 1; i < speechOrder.length; i++) {
+    const btn = speechButtons.find(b => b.dataset.label === speechOrder[i]);
+    if (btn) {
+      btn.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+  }
+}
 
   function updateResponsibilitiesPanel(speech) {
     const panel = document.getElementById('responsibilities-list');
@@ -166,6 +174,7 @@ function disablePreviousSpeeches(index) {
     updateSpeechDisplay();
     updateResponsibilitiesPanel(label);
     disablePreviousSpeeches(newIndex);
+    enableLaterSpeeches(newIndex);
     speechButtons.forEach(btn => btn.classList.remove('active'));
     button.classList.add('active');
     startSpeechTimer();
