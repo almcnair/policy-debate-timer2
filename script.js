@@ -69,6 +69,7 @@ modalBackdrop.addEventListener('click', () => {
   function pausePrepTimer() {
     isPrepRunning = false;
     clearInterval(prepTimer);
+    startPrepBtn.textContent = 'Start Prep';
   }
 
   function startSpeechTimer() {
@@ -90,6 +91,7 @@ modalBackdrop.addEventListener('click', () => {
   function startPrepTimer() {
     if (isPrepRunning) return;
     isPrepRunning = true;
+    startPrepBtn.textContent = 'Pause';
     prepTimer = setInterval(() => {
       if (--prepTimeLeft <= 0) {
         clearInterval(prepTimer);
@@ -106,21 +108,21 @@ modalBackdrop.addEventListener('click', () => {
   function handleSpeechEnd(label) {
     const button = speechButtons.find(btn => btn.dataset.label === label);
     if (button) {
-      button.classList.add('opacity-50', 'cursor-not-allowed');
-      button.disabled = true;
-    }
+  button.classList.add('opacity-50', 'cursor-not-allowed');
+  // button.disabled = true;   <-- REMOVE or comment out this line
+}
     alarmAudio.play();
   }
 
-  function disablePreviousSpeeches(index) {
-    for (let i = 0; i < index; i++) {
-      const btn = speechButtons.find(b => b.dataset.label === speechOrder[i]);
-      if (btn) {
-        btn.classList.add('opacity-50', 'cursor-not-allowed');
-        btn.disabled = true;
-      }
+function disablePreviousSpeeches(index) {
+  for (let i = 0; i < index; i++) {
+    const btn = speechButtons.find(b => b.dataset.label === speechOrder[i]);
+    if (btn) {
+      btn.classList.add('opacity-50', 'cursor-not-allowed');
+      // btn.disabled = true;   <--- comment this out
     }
   }
+}
 
   function updateResponsibilitiesPanel(speech) {
     const panel = document.getElementById('responsibilities-list');
@@ -151,11 +153,13 @@ modalBackdrop.addEventListener('click', () => {
 
     const isGrayedOut = button.classList.contains('opacity-50');
     const isDifferentSpeech = label !== speechOrder[currentSpeechIndex];
-    if (isGrayedOut || (isSpeechRunning && isDifferentSpeech)) {
-      const confirmed = confirm('Are you sure you want to start a new speech? Your timer will reset.');
-      if (!confirmed) return;
-    }
-
+    if (isGrayedOut) {
+  const confirmed = confirm('Are you sure you want to restart this speech?');
+  if (!confirmed) return;
+} else if (isSpeechRunning && isDifferentSpeech) {
+  const confirmed = confirm('Are you sure you want to start a new speech? Your timer will reset.');
+  if (!confirmed) return;
+}
     pauseSpeechTimer();
     speechTimeLeft = speechTimes[label];
     currentSpeechIndex = newIndex;
