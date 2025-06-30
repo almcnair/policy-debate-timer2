@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let speechTimes = {};
   let speechTimeLeft = 300;
   let speechTimer, isSpeechRunning = false, speechStarted = false;
+let selectedRole = '1A';  // default, will be changed in setupConfirm
+
 
   const respToggle = document.getElementById('responsibilities-toggle');
   const respPanel = document.getElementById('responsibilities-panel');
@@ -135,14 +137,18 @@ function enableLaterSpeeches(index) {
   function updateResponsibilitiesPanel(speech) {
     const panel = document.getElementById('responsibilities-list');
     panel.innerHTML = '';
-    const data = responsibilitiesData[speech];
+if (!selectedRole || !responsibilitiesData[selectedRole]) {
+  panel.innerHTML = '<li>No role selected or role data missing.</li>';
+  return;
+}
+const data = responsibilitiesData[selectedRole][speech];
     if (!data) {
       panel.innerHTML = '<li>No responsibilities found for this speech.</li>';
       return;
     }
     for (const [category, content] of Object.entries(data)) {
       const item = document.createElement('li');
-      item.innerHTML = `<strong>${category}:</strong> ${content}`;
+item.innerHTML = `<h2 class="text-xl font-serif text-cyan-400 mb-2">${category}</h2>${content}<br><br>`;
       panel.appendChild(item);
     }
   }
