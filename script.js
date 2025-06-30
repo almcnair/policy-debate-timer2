@@ -1,296 +1,112 @@
-// === script.js ===
-document.addEventListener('DOMContentLoaded', () => {
-  const speechOrder = ['1AC', 'CX1', '1NC', 'CX2', '2AC', 'CX3', '2NC', 'CX4', '1NR', '1AR', '2NR', '2AR'];
-  let currentSpeechIndex = -1;
-  let speechTimes = {};
-  let speechTimeLeft = 300;
-  let speechTimer, isSpeechRunning = false, speechStarted = false;
-let selectedRole = '1A';  // default, will be changed in setupConfirm
-
-
-  const respToggle = document.getElementById('responsibilities-toggle');
-  const respPanel = document.getElementById('responsibilities-panel');
-  const closeBtn = document.getElementById('close-responsibilities');
-  const speechButtons = Array.from(document.querySelectorAll('.speech-btn'));
-  const startBtn = document.getElementById('start-btn');
-  const mainTimer = document.getElementById('main-timer');
-  const resetBtn = document.getElementById('reset-btn');
-  const alarmAudio = document.getElementById('alarm-audio');
-  const levelSelect = document.getElementById('level-select');
-  const roleSelect = document.getElementById('role-select');
-  const setupConfirm = document.getElementById('setup-confirm');
-  const setupModal = document.getElementById('setup-modal');
-  const setupClose = document.getElementById('setup-close');
-  const modalBackdrop = document.getElementById('modal-backdrop');
-  const divisionDisplay = document.createElement('div');
-
-  const prepTimerEl = document.getElementById('prep-timer');
-  const startPrepBtn = document.getElementById('start-prep-btn');
-  const resetPrepBtn = document.getElementById('reset-prep-btn');
-  let prepTimeLeft = 300;
-  let prepTimer = null;
-  let isPrepRunning = false;
-
-  // Auto-select default on load
-  levelSelect.value = 'middle';
-  roleSelect.value = '1A';
-function autoSetupIfDismissed() {
-  levelSelect.value = 'middle';
-  roleSelect.value = '1A';
-  setupConfirm.click();
-}
-
-setupClose.addEventListener('click', () => {
-  setupModal.style.display = 'none';
-  modalBackdrop.style.display = 'none';
-  autoSetupIfDismissed();
-});
-
-modalBackdrop.addEventListener('click', () => {
-  setupModal.style.display = 'none';
-  modalBackdrop.style.display = 'none';
-  autoSetupIfDismissed();
-});
-
-  function updateSpeechDisplay() {
-    const mins = Math.floor(speechTimeLeft / 60);
-    const secs = speechTimeLeft % 60;
-    mainTimer.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
-  }
-  function updatePrepDisplay() {
-    const m = Math.floor(prepTimeLeft / 60);
-    const s = prepTimeLeft % 60;
-    prepTimerEl.textContent = `${m}:${s.toString().padStart(2, '0')}`;
-  }
-
-  function pauseSpeechTimer() {
-    isSpeechRunning = false;
-    clearInterval(speechTimer);
-    startBtn.textContent = currentSpeechIndex === -1 ? 'Start 1AC' : 'Start';
-  }
-  function pausePrepTimer() {
-    isPrepRunning = false;
-    clearInterval(prepTimer);
-    startPrepBtn.textContent = 'Start Prep';
-  }
-
-  function startSpeechTimer() {
-    if (isSpeechRunning) return;
-    isSpeechRunning = true;
-    startBtn.textContent = 'Pause';
-    speechTimer = setInterval(() => {
-      if (--speechTimeLeft <= 0) {
-        clearInterval(speechTimer);
-        isSpeechRunning = false;
-        speechTimeLeft = 0;
-        updateSpeechDisplay();
-        handleSpeechEnd(speechOrder[currentSpeechIndex]);
-        return;
-      }
-      updateSpeechDisplay();
-    }, 1000);
-  }
-  function startPrepTimer() {
-    if (isPrepRunning) return;
-    isPrepRunning = true;
-    startPrepBtn.textContent = 'Pause';
-    prepTimer = setInterval(() => {
-      if (--prepTimeLeft <= 0) {
-        clearInterval(prepTimer);
-        isPrepRunning = false;
-        prepTimeLeft = 0;
-        updatePrepDisplay();
-        alarmAudio.play();
-      } else {
-        updatePrepDisplay();
-      }
-    }, 1000);
-  }
-
-  function handleSpeechEnd(label) {
-    const button = speechButtons.find(btn => btn.dataset.label === label);
-    if (button) {
-  button.classList.add('opacity-50', 'cursor-not-allowed');
-  // button.disabled = true;   <-- REMOVE or comment out this line
-}
-    alarmAudio.play();
-  }
-
-function disablePreviousSpeeches(index) {
-  for (let i = 0; i < index; i++) {
-    const btn = speechButtons.find(b => b.dataset.label === speechOrder[i]);
-    if (btn) {
-      btn.classList.add('opacity-50', 'cursor-not-allowed');
-      // btn.disabled = true;   <--- comment this out
+<!DOCTYPE html>
+<html lang="en" class="bg-slate-900">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Policy Debate Timer</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .speech-btn.active {
+      box-shadow: 0 0 0 3px #22d3ee;
+      transition: box-shadow 0.3s ease;
     }
-  }
-}
-function enableLaterSpeeches(index) {
-  for (let i = index + 1; i < speechOrder.length; i++) {
-    const btn = speechButtons.find(b => b.dataset.label === speechOrder[i]);
-    if (btn) {
-      btn.classList.remove('opacity-50', 'cursor-not-allowed');
+    html, body {
+      height: 100%;
+      background-color: #101827;
     }
-  }
-}
+  </style>
+</head>
 
-  function updateResponsibilitiesPanel(speech) {
-    const panel = document.getElementById('responsibilities-list');
-    panel.innerHTML = '';
-if (!selectedRole || !responsibilitiesData[selectedRole]) {
-  panel.innerHTML = '<li>No role selected or role data missing.</li>';
-  return;
-}
-const data = responsibilitiesData[selectedRole][speech];
-    if (!data) {
-      panel.innerHTML = '<li>No responsibilities found for this speech.</li>';
-      return;
-    }
-    for (const [category, content] of Object.entries(data)) {
-      const item = document.createElement('li');
-item.innerHTML = `<h2 class="text-xl font-serif text-cyan-400 mb-2">${category}</h2>${content}<br><br>`;
-      panel.appendChild(item);
-    }
-  }
+<body class="min-h-screen flex flex-col items-center justify-center text-white">
 
-  function handleSpeechButton(button) {
-    const label = button.dataset.label;
-    const newIndex = speechOrder.indexOf(label);
-    if (!speechTimes[label]) return;
+  <!-- Setup Modal -->
+  <div id="modal-backdrop" class="fixed inset-0 bg-black bg-opacity-40 z-40"></div>
+  <div id="setup-modal" class="bg-gray-800 text-white fixed z-50 rounded-lg shadow-lg p-6 sm:p-8 max-w-md w-full mx-4 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+    <button id="setup-close" aria-label="Close Setup Modal" class="absolute top-0 right-0 mt-2 mr-2 text-white text-xl font-bold focus:outline-none">&times;</button>
+    <h2 class="text-xl font-bold mb-4">Setup</h2>
+    <label for="level-select" class="block font-semibold mb-1">Select Your Division</label>
+    <select id="level-select" class="w-full mb-4 border rounded px-2 py-1 text-black">
+      <option value="">Choose...</option>
+      <option value="middle">Middle School</option>
+      <option value="high">High School</option>
+    </select>
+    <label for="role-select" class="block font-semibold mb-1">Select Your Role</label>
+    <select id="role-select" class="w-full mb-6 border rounded px-2 py-1 text-black">
+      <option value="">Choose...</option>
+      <option value="1A">1st Affirmative</option>
+      <option value="2A">2nd Affirmative</option>
+      <option value="1N">1st Negative</option>
+      <option value="2N">2nd Negative</option>
+      <option value="Judge">Judge</option>
+    </select>
+    <button id="setup-confirm" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded">Start Debate</button>
+  </div>
 
-    // new logic:
-    if (isPrepRunning) {
-      const confirmSwitch = confirm("Are you sure you want to start a speech? Your prep time will pause.");
-      if (!confirmSwitch) return;
-      pausePrepTimer();
-    }
+  <!-- Responsibilities Panel -->
+<button id="responsibilities-toggle" class="fixed top-16 right-4 bg-blue-600 text-white px-4 py-2 rounded shadow z-50 flex items-center space-x-2">
+  <!-- Solid Information Circle Icon (Heroicons) -->
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+    <path fill-rule="evenodd" d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zM11 8a1 1 0 10-2 0 1 1 0 002 0zm-1 2a1 1 0 00-.993.883L9 11v3a1 1 0 001.993.117L11 14v-3a1 1 0 00-1-1z" clip-rule="evenodd" />
+  </svg>
+  <span>Coach Tips</span>
+</button>
 
-    const isGrayedOut = button.classList.contains('opacity-50');
-    const isDifferentSpeech = label !== speechOrder[currentSpeechIndex];
-    if (isGrayedOut) {
-  const confirmed = confirm('Are you sure you want to restart this speech?');
-  if (!confirmed) return;
-} else if (isSpeechRunning && isDifferentSpeech) {
-  const confirmed = confirm('Are you sure you want to start a new speech? Your timer will reset.');
-  if (!confirmed) return;
-}
-    pauseSpeechTimer();
-    speechTimeLeft = speechTimes[label];
-    currentSpeechIndex = newIndex;
-    updateSpeechDisplay();
-    updateResponsibilitiesPanel(label);
-    disablePreviousSpeeches(newIndex);
-    enableLaterSpeeches(newIndex);
-    speechButtons.forEach(btn => btn.classList.remove('active'));
-    button.classList.add('active');
-    startSpeechTimer();
-    startBtn.disabled = false;
-    startBtn.textContent = 'Pause';
-    speechStarted = true;
-  }
 
-  speechButtons.forEach(btn => btn.addEventListener('click', () => handleSpeechButton(btn)));
 
-  startBtn.addEventListener('click', () => {
-    if (isPrepRunning) {
-      const confirmSwitch = confirm("Are you sure you want to start a speech? Your prep time will pause.");
-      if (!confirmSwitch) return;
-      pausePrepTimer();
-    }
-    if (!speechStarted) {
-      const initialSpeech = '1AC';
-      speechTimeLeft = speechTimes[initialSpeech];
-      currentSpeechIndex = 0;
-      updateSpeechDisplay();
-      updateResponsibilitiesPanel(initialSpeech);
-      disablePreviousSpeeches(0);
-      document.querySelector(`[data-label="1AC"]`).classList.add('active');
-    }
-    isSpeechRunning ? pauseSpeechTimer() : startSpeechTimer();
-  });
+<div id="responsibilities-panel" class="fixed top-0 right-0 w-1/2 h-full bg-gray-900 border-l border-gray-600 text-white shadow-lg transform translate-x-full transition-transform duration-300 z-50 overflow-y-auto">
+    <div class="p-6 relative">
+      <button id="close-responsibilities" aria-label="Close Responsibilities Panel" class="absolute top-0 right-0 mt-2 mr-2 text-white text-xl font-bold focus:outline-none">&times;</button>
+<h1 class="text-2xl font-bold mb-4 mt-2 text-cyan-400 flex items-center space-x-2">
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+    <path fill-rule="evenodd" d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zM11 8a1 1 0 10-2 0 1 1 0 002 0zm-1 2a1 1 0 00-.993.883L9 11v3a1 1 0 001.993.117L11 14v-3a1 1 0 00-1-1z" clip-rule="evenodd" />
+  </svg>
+  <span>Coach Tips</span>
+</h1>
+      <ul id="responsibilities-list" class="list-disc pl-5"></ul>
+    </div>
+  </div>
 
-  resetBtn.addEventListener('click', () => {
-    if (confirm('Are you sure you want to reset the timer?')) {
-      if (currentSpeechIndex !== -1) {
-        pauseSpeechTimer();
-        const label = speechOrder[currentSpeechIndex];
-        speechTimeLeft = speechTimes[label];
-        updateSpeechDisplay();
-      }
-    }
-  });
+<!-- Speech Buttons with tooltips -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-8 w-full max-w-2xl px-4">
+  <button class="speech-btn bg-blue-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="1AC" title="Start the 1st Affirmative Constructive">1AC</button>
+  <button class="speech-btn bg-purple-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="CX1" title="Start Cross-Examination after 1AC">CX1</button>
+  <button class="speech-btn bg-blue-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="1NC" title="Start the 1st Negative Constructive">1NC</button>
+  <button class="speech-btn bg-purple-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="CX2" title="Start Cross-Examination after 1NC">CX2</button>
+  <button class="speech-btn bg-blue-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="2AC" title="Start the 2nd Affirmative Constructive">2AC</button>
+  <button class="speech-btn bg-purple-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="CX3" title="Start Cross-Examination after 2AC">CX3</button>
+  <button class="speech-btn bg-blue-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="2NC" title="Start the 2nd Negative Constructive">2NC</button>
+  <button class="speech-btn bg-purple-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="CX4" title="Start Cross-Examination after 2NC">CX4</button>
+  <button class="speech-btn bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="1NR" title="Start the 1st Negative Rebuttal">1NR</button>
+  <button class="speech-btn bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="1AR" title="Start the 1st Affirmative Rebuttal">1AR</button>
+  <button class="speech-btn bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="2NR" title="Start the 2nd Negative Rebuttal">2NR</button>
+  <button class="speech-btn bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="2AR" title="Start the 2nd Affirmative Rebuttal">2AR</button>
+</div>
 
-  startPrepBtn.addEventListener('click', () => {
-    if (isSpeechRunning) {
-      const confirmSwitch = confirm("Are you sure you want to start Prep Time? The speech timer will pause.");
-      if (!confirmSwitch) return;
-      pauseSpeechTimer();
-    }
-    if (isPrepRunning) {
-      pausePrepTimer();
-    } else {
-      startPrepTimer();
-    }
-  });
+  <!-- Main Timer Section -->
+  <div id="speechTimerContainer" class="bg-gray-800 rounded-lg shadow-lg p-6 sm:p-8 mt-8 flex flex-col items-center w-full max-w-md mx-4">
+    <div class="flex items-center space-x-4 mb-4">
+      <span id="main-timer" contenteditable="true" class="text-6xl sm:text-8xl font-mono text-white transition-colors duration-200 outline-none focus:ring-2 ring-blue-400 rounded px-2" aria-label="Edit Speech Timer" title="Click to edit time">5:00</span>
+    </div>
+    <div class="flex space-x-4 mt-4">
+      <button id="start-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded">Start 1AC</button>
+      <button id="reset-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded">Reset</button>
+    </div>
+  </div>
 
-  resetPrepBtn.addEventListener('click', () => {
-    if (confirm('Are you sure you want to reset the prep timer?')) {
-      pausePrepTimer();
-      prepTimeLeft = 300;
-      updatePrepDisplay();
-    }
-  });
+  <!-- Prep Timer Section -->
+  <div class="bg-gray-800 rounded-lg shadow-lg p-6 mt-8 flex flex-col items-center w-full max-w-md mx-4">
+    <div class="flex items-center space-x-4 mb-4">
+      <span id="prep-timer" contenteditable="true" class="text-xl sm:text-3xl font-mono text-white outline-none focus:ring-2 ring-yellow-400 rounded px-2" aria-label="Edit Prep Timer" title="Click to edit time">5:00</span>
+    </div>
+    <div class="flex space-x-4">
+      <button id="start-prep-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded">Start Prep</button>
+      <button id="reset-prep-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded">Reset Prep</button>
+    </div>
+  </div>
 
-  setupConfirm.addEventListener('click', () => {
-    const level = levelSelect.value;
-    const role = roleSelect.value;
-    const timePresets = {
-      high: { '1AC': 480, 'CX1': 180, '1NC': 480, 'CX2': 180, '2AC': 480, 'CX3': 180, '2NC': 480, 'CX4': 180, '1NR': 300, '1AR': 300, '2NR': 300, '2AR': 300 },
-      middle: { '1AC': 300, 'CX1': 180, '1NC': 300, 'CX2': 180, '2AC': 300, 'CX3': 180, '2NC': 300, 'CX4': 180, '1NR': 180, '1AR': 180, '2NR': 180, '2AR': 180 }
-    };
-    speechTimes = timePresets[level];
-    setupModal.style.display = 'none';
-    modalBackdrop.style.display = 'none';
-
-    divisionDisplay.textContent = `${level === 'middle' ? 'Middle School' : 'High School'} | ${role}`;
-    divisionDisplay.className = 'fixed top-2 left-2 text-sm text-white bg-gray-700 px-2 py-1 rounded cursor-pointer z-50';
-    divisionDisplay.onclick = () => {
-      if (isSpeechRunning) {
-        if (!confirm('Do you want to stop your current speech timer?')) return;
-        pauseSpeechTimer();
-      }
-      setupModal.style.display = 'block';
-      modalBackdrop.style.display = 'block';
-    };
-    document.body.appendChild(divisionDisplay);
-    updateSpeechDisplay();
-  });
-
-  setupClose.addEventListener('click', () => {
-    setupModal.style.display = 'none';
-    modalBackdrop.style.display = 'none';
-  });
-  modalBackdrop.addEventListener('click', () => {
-    setupModal.style.display = 'none';
-    modalBackdrop.style.display = 'none';
-  });
-
-  closeBtn.addEventListener('click', () => {
-    respPanel.classList.add('translate-x-full');
-    respToggle.setAttribute('aria-expanded', 'false');
-  });
-  respToggle.addEventListener('click', e => {
-    e.stopPropagation();
-    const isOpen = respPanel.classList.toggle('translate-x-full');
-    respToggle.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
-  });
-  document.addEventListener('click', e => {
-    if (!respPanel.contains(e.target) && !respToggle.contains(e.target)) {
-      respPanel.classList.add('translate-x-full');
-      respToggle.setAttribute('aria-expanded', 'false');
-    }
-  });
-
-  updateSpeechDisplay();
-  updatePrepDisplay();
-});
+  <!-- Alarm Audio -->
+  <audio id="alarm-audio" src="assets/alarm.mp3" preload="auto"></audio>
+  <script src="responsibilities.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
