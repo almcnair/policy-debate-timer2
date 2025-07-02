@@ -16,7 +16,6 @@
     }
   </style>
 </head>
-
 <body class="min-h-screen flex flex-col items-center justify-center text-white">
 
   <!-- Setup Modal -->
@@ -42,46 +41,38 @@
     <button id="setup-confirm" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded">Start Debate</button>
   </div>
 
+  <!-- Responsibilities Toggle Button -->
+  <button id="responsibilities-toggle" class="fixed top-16 right-4 bg-blue-600 text-white px-4 py-2 rounded shadow z-50 flex items-center space-x-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+      <path fill-rule="evenodd" d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zM11 8a1 1 0 10-2 0 1 1 0 002 0zm-1 2a1 1 0 00-.993.883L9 11v3a1 1 0 001.993.117L11 14v-3a1 1 0 00-1-1z" clip-rule="evenodd" />
+    </svg>
+    <span>Coach Tips</span>
+  </button>
+
   <!-- Responsibilities Panel -->
-<div id="top-controls" class="fixed top-4 right-4 flex flex-row gap-2 z-50">
-<button id="responsibilities-toggle" class="bg-blue-600 text-white px-4 py-2 rounded shadow flex items-center space-x-2">
-  <!-- Solid Information Circle Icon (Heroicons) -->
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-    <path fill-rule="evenodd" d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zM11 8a1 1 0 10-2 0 1 1 0 002 0zm-1 2a1 1 0 00-.993.883L9 11v3a1 1 0 001.993.117L11 14v-3a1 1 0 00-1-1z" clip-rule="evenodd" />
-  </svg>
-  <span>Coach Tips</span>
-</button>
-
-
-
-<div id="responsibilities-panel" class="fixed top-0 right-0 w-1/2 h-full bg-gray-900 border-l border-gray-600 text-white shadow-lg transform translate-x-full transition-transform duration-300 z-50 overflow-y-auto">
+  <div id="responsibilities-panel" class="fixed top-0 right-0 w-full sm:w-80 h-full bg-gray-800 text-white shadow-lg transform translate-x-full transition-transform duration-300 z-50 overflow-y-auto">
     <div class="p-6 relative">
       <button id="close-responsibilities" aria-label="Close Responsibilities Panel" class="absolute top-0 right-0 mt-2 mr-2 text-white text-xl font-bold focus:outline-none">&times;</button>
-<h1 class="text-2xl font-bold mb-4 mt-2 text-cyan-400 flex items-center space-x-2">
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-    <path fill-rule="evenodd" d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zM11 8a1 1 0 10-2 0 1 1 0 002 0zm-1 2a1 1 0 00-.993.883L9 11v3a1 1 0 001.993.117L11 14v-3a1 1 0 00-1-1z" clip-rule="evenodd" />
-  </svg>
-  <span>Coach Tips</span>
-</h1>
+      <h3 class="text-lg font-bold mb-4 mt-2">Coach Tips</h3>
       <ul id="responsibilities-list" class="list-disc pl-5"></ul>
     </div>
   </div>
 
-<!-- Speech Buttons with tooltips -->
-<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-8 w-full max-w-2xl px-4">
-  <button class="speech-btn bg-blue-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="1AC" title="Start the 1st Affirmative Constructive">1AC</button>
-  <button class="speech-btn bg-purple-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="CX1" title="Start Cross-Examination after 1AC">CX1</button>
-  <button class="speech-btn bg-blue-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="1NC" title="Start the 1st Negative Constructive">1NC</button>
-  <button class="speech-btn bg-purple-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="CX2" title="Start Cross-Examination after 1NC">CX2</button>
-  <button class="speech-btn bg-blue-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="2AC" title="Start the 2nd Affirmative Constructive">2AC</button>
-  <button class="speech-btn bg-purple-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="CX3" title="Start Cross-Examination after 2AC">CX3</button>
-  <button class="speech-btn bg-blue-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="2NC" title="Start the 2nd Negative Constructive">2NC</button>
-  <button class="speech-btn bg-purple-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="CX4" title="Start Cross-Examination after 2NC">CX4</button>
-  <button class="speech-btn bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="1NR" title="Start the 1st Negative Rebuttal">1NR</button>
-  <button class="speech-btn bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="1AR" title="Start the 1st Affirmative Rebuttal">1AR</button>
-  <button class="speech-btn bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="2NR" title="Start the 2nd Negative Rebuttal">2NR</button>
-  <button class="speech-btn bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="2AR" title="Start the 2nd Affirmative Rebuttal">2AR</button>
-</div>
+  <!-- Speech Buttons with tooltips -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-8 w-full max-w-2xl px-4">
+    <button class="speech-btn bg-blue-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="1AC" title="Start the 1st Affirmative Constructive">1AC</button>
+    <button class="speech-btn bg-purple-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="CX1" title="Start Cross-Examination after 1AC">CX1</button>
+    <button class="speech-btn bg-blue-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="1NC" title="Start the 1st Negative Constructive">1NC</button>
+    <button class="speech-btn bg-purple-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="CX2" title="Start Cross-Examination after 1NC">CX2</button>
+    <button class="speech-btn bg-blue-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="2AC" title="Start the 2nd Affirmative Constructive">2AC</button>
+    <button class="speech-btn bg-purple-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="CX3" title="Start Cross-Examination after 2AC">CX3</button>
+    <button class="speech-btn bg-blue-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="2NC" title="Start the 2nd Negative Constructive">2NC</button>
+    <button class="speech-btn bg-purple-500 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="CX4" title="Start Cross-Examination after 2NC">CX4</button>
+    <button class="speech-btn bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="1NR" title="Start the 1st Negative Rebuttal">1NR</button>
+    <button class="speech-btn bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="1AR" title="Start the 1st Affirmative Rebuttal">1AR</button>
+    <button class="speech-btn bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="2NR" title="Start the 2nd Negative Rebuttal">2NR</button>
+    <button class="speech-btn bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded font-bold min-h-[48px] touch-manipulation" data-label="2AR" title="Start the 2nd Affirmative Rebuttal">2AR</button>
+  </div>
 
   <!-- Main Timer Section -->
   <div id="speechTimerContainer" class="bg-gray-800 rounded-lg shadow-lg p-6 sm:p-8 mt-8 flex flex-col items-center w-full max-w-md mx-4">
@@ -111,3 +102,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+

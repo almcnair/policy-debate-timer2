@@ -235,11 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!confirmSwitch) return;
       pauseSpeechTimer();
     }
-    if (isPrepRunning) {
-      pausePrepTimer();
-    } else {
-      startPrepTimer();
-    }
+    isPrepRunning ? pausePrepTimer() : startPrepTimer();
   });
 
   resetPrepBtn.addEventListener('click', () => {
@@ -261,8 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupModal.style.display = 'none';
     modalBackdrop.style.display = 'none';
 
-    divisionDisplay.textContent = `${level === 'middle' ? 'Middle School' : 'High School'} | ${selectedRole}`;
-divisionDisplay.className = 'text-sm text-white bg-gray-700 px-2 py-1 rounded cursor-pointer';
+    divisionDisplay.className = 'fixed top-2 left-2 text-sm text-white bg-gray-700 px-2 py-1 rounded cursor-pointer z-50';
     divisionDisplay.onclick = () => {
       if (isSpeechRunning) {
         if (!confirm('Do you want to stop your current speech timer?')) return;
@@ -271,7 +266,7 @@ divisionDisplay.className = 'text-sm text-white bg-gray-700 px-2 py-1 rounded cu
       setupModal.style.display = 'block';
       modalBackdrop.style.display = 'block';
     };
-document.getElementById('top-controls').appendChild(divisionDisplay);
+    document.body.appendChild(divisionDisplay);
     updateSpeechDisplay();
   });
 
@@ -296,3 +291,4 @@ document.getElementById('top-controls').appendChild(divisionDisplay);
   updateSpeechDisplay();
   updatePrepDisplay();
 });
+
