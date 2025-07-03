@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const respToggle = document.getElementById('responsibilities-toggle');
   const respPanel = document.getElementById('responsibilities-panel');
   const closeBtn = document.getElementById('close-responsibilities');
+    document.getElementById('responsibilities-list').innerHTML = `
+      <li class="text-white p-4">Click a speech to start the debate.</li>
+    `;
   const speechButtons = Array.from(document.querySelectorAll('.speech-btn'));
   const startBtn = document.getElementById('start-btn');
   const mainTimer = document.getElementById('main-timer');
@@ -20,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const setupModal = document.getElementById('setup-modal');
   const setupClose = document.getElementById('setup-close');
   const modalBackdrop = document.getElementById('modal-backdrop');
-  const divisionDisplay = document.createElement('div');
+  const divisionDisplay = document.createElement('button');
 
   const prepTimerEl = document.getElementById('prep-timer');
   const startPrepBtn = document.getElementById('start-prep-btn');
@@ -29,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let prepTimer = null;
   let isPrepRunning = false;
 
-  // Auto-select defaults
+  // auto-select defaults
   levelSelect.value = 'middle';
   roleSelect.value = '1A';
 
@@ -113,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const button = speechButtons.find(btn => btn.dataset.label === label);
     if (button) {
       button.classList.add('opacity-50', 'cursor-not-allowed', 'line-through');
-      button.disabled = true;
+      // keep clickable, do not disable
     }
     alarmAudio.play();
     const nextIndex = currentSpeechIndex + 1;
@@ -132,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const btn = speechButtons.find(b => b.dataset.label === speechOrder[i]);
       if (btn) {
         btn.classList.add('opacity-50', 'cursor-not-allowed', 'line-through');
-        btn.disabled = true;
       }
     }
   }
@@ -142,7 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const btn = speechButtons.find(b => b.dataset.label === speechOrder[i]);
       if (btn) {
         btn.classList.remove('opacity-50', 'cursor-not-allowed', 'line-through');
-        btn.disabled = false;
       }
     }
   }
@@ -174,11 +175,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const isGrayedOut = button.classList.contains('opacity-50');
-    const isDifferentSpeech = label !== speechOrder[currentSpeechIndex];
     if (isGrayedOut) {
-      const confirmed = confirm('Are you sure you want to restart this speech? The timer will reset.');
+      const confirmed = confirm("Are you sure you want to restart this speech?");
       if (!confirmed) return;
-    } else if (isSpeechRunning && isDifferentSpeech) {
+
+      pauseSpeechTimer();
+      speechTimeLeft = speechTimes[label];
+      currentSpeechIndex = newIndex;
+      updateSpeechDisplay();
+      updateResponsibilitiesPanel(label);
+
+      disablePreviousSpeeches(newIndex);
+      enableLaterSpeeches(newIndex);
+
+      button.classList.remove('opacity-50', 'cursor-not-allowed', 'line-through');
+      button.classList.add('active');
+
+      speechButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+
+      startSpeechTimer();
+      startBtn.disabled = false;
+      startBtn.textContent = 'Pause';
+      speechStarted = true;
+      return;
+    }
+
+    const isDifferentSpeech = label !== speechOrder[currentSpeechIndex];
+    if (isSpeechRunning && isDifferentSpeech) {
       const confirmed = confirm('Are you sure you want to start a new speech? Your timer will reset.');
       if (!confirmed) return;
     }
@@ -257,7 +281,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupModal.style.display = 'none';
     modalBackdrop.style.display = 'none';
 
-    divisionDisplay.className = 'fixed top-2 left-2 text-sm text-white bg-gray-700 px-2 py-1 rounded cursor-pointer z-50';
+    divisionDisplay.textContent = `${level === 'middle' ? 'Middle School' : 'High School'} | ${selectedRole}`;
+      divisionDisplay.className = 'fixed top-14 left-2 text-sm text-white bg-gray-700 px-2 py-1 rounded cursor-pointer z-50';
     divisionDisplay.onclick = () => {
       if (isSpeechRunning) {
         if (!confirm('Do you want to stop your current speech timer?')) return;
