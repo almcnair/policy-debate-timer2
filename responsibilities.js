@@ -7,6 +7,7 @@ const responsibilitiesData = {
         <li>Explain why change is needed and how your plan solves the problem.</li>
         <li>Frame the round with advantages and impacts.</li>
       </ul>
+    <a href="/debate101.html" class="underline text-cyan-400">Learn more about debate basics</a>
     `,
     "Style & Strategy Tips": `
       <ul class="list-decimal pl-5 space-y-1">
