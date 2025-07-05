@@ -1,244 +1,214 @@
 const responsibilitiesData = {
-  "1AC": {
-    "Core Responsibilities": `
-      <p class="mb-2">The 1AC kicks off the debate, introducing the plan and establishing the harms, inherency, and solvency.</p>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Present a clear and organized case.</li>
-        <li>Explain why change is needed and how your plan solves the problem.</li>
-        <li>Frame the round with advantages and impacts.</li>
-      </ul>
-    <a href="/debate101.html" class="underline text-cyan-400">Learn more about debate basics</a>
-    `,
-    "Style & Strategy Tips": `
-      <ul class="list-decimal pl-5 space-y-1">
-        <li>Speak clearly and confidently.</li>
-        <li>Slow down on key arguments.</li>
-        <li>Use signposting to guide the judge.</li>
-      </ul>
-    `,
-    "Reminders & Common Mistakes": `
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Don’t forget to read all plan text.</li>
-        <li>Check time — avoid rushing.</li>
-      </ul>
-    `
+  "1A": {
+      "1AC": {
+          "🌟 1AC Key Tasks": `
+            <ul class="list-disc pl-5 space-y-2 leading-relaxed">
+              <li>✅ <strong>Present the plan</strong> – tell the judge <em>exactly</em> what you want to change and how it will work.</li>
+              <li>✅ <strong>Prove the problem is real and urgent.</strong></li>
+              <li>✅ <strong>Explain how your plan solves it. How does the plan make the world a better place?</strong></li>
+            </ul>
+            <p class="italic text-yellow-300 mt-2">💡 Remember: clarity wins debates!</p>
+          `,
+          "Stock Issues": `
+       
+                  <li>Significance — is the problem big enough?</li>
+                  <li>Harms — what bad things happen?</li>
+                  <li>Inherency — why hasn’t it been fixed?</li>
+                  <li>Topicality — is it on topic?</li>
+                  <li>Solvency — does the plan fix it?</li>
+                </ul>
+          `,
+       },
+    "2AC": {
+      "Core Responsibilities": `
+        <p class="mb-2">Extend the affirmative after negative attacks.</p>
+        <ul class="list-disc pl-5">
+          <li>Answer off-case and on-case attacks.</li>
+          <li>Extend your strongest advantages.</li>
+        </ul>`,
+      "Style & Strategy Tips": `
+        <ul class="list-disc pl-5">
+          <li>Group arguments to save time.</li>
+          <li>Label each answer clearly.</li>
+        </ul>`,
+      "Reminders & Common Mistakes": `
+        <ul class="list-disc pl-5">
+          <li>Don’t drop negative arguments.</li>
+        </ul>`
+    },
+    "CX3": {
+      "Core Responsibilities": `
+        <p class="mb-2">Cross-ex the 2NC to expose weak negative extensions.</p>
+        <ul class="list-disc pl-5">
+          <li>Test consistency of their block strategy.</li>
+        </ul>`,
+      "Style & Strategy Tips": `
+        <ul class="list-disc pl-5">
+          <li>Stay focused and calm.</li>
+        </ul>`,
+      "Reminders & Common Mistakes": `
+        <ul class="list-disc pl-5">
+          <li>Don’t let them control the cross-x.</li>
+        </ul>`
+    },
+    "1AR": {
+      "Core Responsibilities": `
+        <p class="mb-2">Answer the entire negative block in 5 minutes.</p>
+        <ul class="list-disc pl-5">
+          <li>Extend your best advantages.</li>
+          <li>Answer all negative arguments.</li>
+        </ul>`,
+      "Style & Strategy Tips": `
+        <ul class="list-disc pl-5">
+          <li>Group responses whenever possible.</li>
+          <li>Prioritize impacts clearly.</li>
+        </ul>`,
+      "Reminders & Common Mistakes": `
+        <ul class="list-disc pl-5">
+          <li>Don’t leave arguments dropped.</li>
+        </ul>`
+    },
+    "2AR": {
+      "Core Responsibilities": `
+        <p class="mb-2">Summarize the entire round for the judge and weigh impacts.</p>
+        <ul class="list-disc pl-5">
+          <li>Compare affirmative world vs. negative world.</li>
+          <li>Give final voters for aff.</li>
+        </ul>`,
+      "Style & Strategy Tips": `
+        <ul class="list-disc pl-5">
+          <li>Sound confident and calm.</li>
+          <li>Use weighing language.</li>
+        </ul>`,
+      "Reminders & Common Mistakes": `
+        <ul class="list-disc pl-5">
+          <li>Don’t introduce new arguments.</li>
+        </ul>`
+    }
   },
-  "CX1": {
-    "Core Responsibilities": `
-      <p class="mb-2">Cross-ex of the 1AC tests the affirmative's evidence and clarifies arguments.</p>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Ask about definitions and evidence sources.</li>
-        <li>Expose any contradictions.</li>
-      </ul>
-    `,
-    "Style & Strategy Tips": `
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Stay calm and polite.</li>
-        <li>Use short, clear questions.</li>
-      </ul>
-    `,
-    "Reminders & Common Mistakes": `
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Don’t argue during cross-x — just ask questions.</li>
-      </ul>
-    `
+  "2A": {
+    "2AC": {
+      "Core Responsibilities": `
+        <p class="mb-2">Rebuild the 1AC by answering negative arguments.</p>
+        <ul class="list-disc pl-5">
+          <li>Respond to off-case and on-case arguments.</li>
+          <li>Reinforce your strongest advantages.</li>
+        </ul>`,
+      "Style & Strategy Tips": `
+        <ul class="list-decimal pl-5">
+          <li>Group responses to save time.</li>
+          <li>Signpost each response clearly.</li>
+        </ul>`,
+      "Reminders & Common Mistakes": `
+        <ul class="list-disc pl-5">
+          <li>Don’t drop major negative arguments.</li>
+        </ul>`
+    },
+    "CX3": {
+      "Core Responsibilities": `
+        <p class="mb-2">Cross-examine the 2NC effectively.</p>
+        <ul class="list-disc pl-5">
+          <li>Clarify their strategy and evidence.</li>
+          <li>Set up your partner for the 1AR.</li>
+        </ul>`,
+      "Style & Strategy Tips": `
+        <ul class="list-disc pl-5">
+          <li>Be calm and strategic.</li>
+          <li>Use short, clear questions.</li>
+        </ul>`,
+      "Reminders & Common Mistakes": `
+        <ul class="list-disc pl-5">
+          <li>Don’t waste cross-x on minor issues.</li>
+        </ul>`
+    }
   },
-  "1NC": {
-    "Core Responsibilities": `
-      <p class="mb-2">The 1NC responds to the 1AC and introduces negative positions.</p>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Answer every key advantage from the 1AC.</li>
-        <li>Read off-case arguments (disads, counterplans, topicality).</li>
-      </ul>
-    `,
-    "Style & Strategy Tips": `
-      <ul class="list-decimal pl-5 space-y-1">
-        <li>Be organized and efficient.</li>
-        <li>Label each off-case position clearly.</li>
-      </ul>
-    `,
-    "Reminders & Common Mistakes": `
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Don’t drop parts of the plan text arguments.</li>
-      </ul>
-    `
+  "1N": {
+    "1NC": {
+      "Core Responsibilities": `
+        <p class="mb-2">Answer the 1AC and present off-case positions.</p>
+        <ul class="list-disc pl-5">
+          <li>Read disadvantages, topicality, and counterplans.</li>
+          <li>Attack the affirmative's solvency and harms.</li>
+        </ul>`,
+      "Style & Strategy Tips": `
+        <ul class="list-decimal pl-5">
+          <li>Label your arguments clearly.</li>
+          <li>Stay organized and confident.</li>
+        </ul>`,
+      "Reminders & Common Mistakes": `
+        <ul class="list-disc pl-5">
+          <li>Don’t drop responses to the plan text.</li>
+        </ul>`
+    },
+    "CX2": {
+      "Core Responsibilities": `
+        <p class="mb-2">Cross-examine the 1AC speaker.</p>
+        <ul class="list-disc pl-5">
+          <li>Identify gaps in solvency or harms.</li>
+          <li>Set up your negative case strategy.</li>
+        </ul>`,
+      "Style & Strategy Tips": `
+        <ul class="list-disc pl-5">
+          <li>Ask clear, pointed questions.</li>
+          <li>Control the flow of the conversation.</li>
+        </ul>`,
+      "Reminders & Common Mistakes": `
+        <ul class="list-disc pl-5">
+          <li>Don’t waste time arguing — ask questions only.</li>
+        </ul>`
+    }
   },
-  "CX2": {
-    "Core Responsibilities": `
-      <p class="mb-2">Cross-ex of the 1NC challenges the negative's arguments and clarifies their off-case positions.</p>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Ask about evidence quality.</li>
-        <li>Highlight contradictions or lack of solvency attacks.</li>
-      </ul>
-    `,
-    "Style & Strategy Tips": `
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Stay respectful.</li>
-        <li>Keep the questions tight and pointed.</li>
-      </ul>
-    `,
-    "Reminders & Common Mistakes": `
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Don’t waste cross-x time on side arguments.</li>
-      </ul>
-    `
+  "2N": {
+    "2NC": {
+      "Core Responsibilities": `
+        <p class="mb-2">Extend your best negative positions and cover new arguments.</p>
+        <ul class="list-disc pl-5">
+          <li>Strategically collapse to 1–2 winning issues.</li>
+          <li>Help set up the 1NR to clean up remaining arguments.</li>
+        </ul>`,
+      "Style & Strategy Tips": `
+        <ul class="list-decimal pl-5">
+          <li>Prioritize impacts and weigh arguments.</li>
+          <li>Stay confident and persuasive.</li>
+        </ul>`,
+      "Reminders & Common Mistakes": `
+        <ul class="list-disc pl-5">
+          <li>Don’t simply repeat the 1NC.</li>
+        </ul>`
+    },
+    "CX4": {
+      "Core Responsibilities": `
+        <p class="mb-2">Cross-examine the 2AC about their answers.</p>
+        <ul class="list-disc pl-5">
+          <li>Test consistency between their arguments.</li>
+          <li>Set up the block strategy.</li>
+        </ul>`,
+      "Style & Strategy Tips": `
+        <ul class="list-disc pl-5">
+          <li>Use calm, organized questions.</li>
+        </ul>`,
+      "Reminders & Common Mistakes": `
+        <ul class="list-disc pl-5">
+          <li>Don’t get sidetracked by irrelevant issues.</li>
+        </ul>`
+    }
   },
-  "2AC": {
-    "Core Responsibilities": `
-      <p class="mb-2">The 2AC rebuilds the affirmative case after the negative’s attacks.</p>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Answer every off-case position.</li>
-        <li>Extend strong advantages from the 1AC.</li>
-        <li>Defend solvency and topicality.</li>
-      </ul>
-    `,
-    "Style & Strategy Tips": `
-      <ul class="list-decimal pl-5 space-y-1">
-        <li>Group arguments to save time.</li>
-        <li>Prioritize key impacts.</li>
-      </ul>
-    `,
-    "Reminders & Common Mistakes": `
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Don’t drop off-case answers.</li>
-      </ul>
-    `
-  },
-  "CX3": {
-    "Core Responsibilities": `
-      <p class="mb-2">Cross-ex of the 2AC questions their case extensions and defensive answers.</p>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Clarify their solvency arguments.</li>
-        <li>Set up the block strategy for the 2NC/1NR.</li>
-      </ul>
-    `,
-    "Style & Strategy Tips": `
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Use calm, focused questions.</li>
-      </ul>
-    `,
-    "Reminders & Common Mistakes": `
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Don’t let the 2AC explain everything without challenge.</li>
-      </ul>
-    `
-  },
-  "2NC": {
-    "Core Responsibilities": `
-      <p class="mb-2">The 2NC begins the negative block by extending positions and addressing 2AC responses.</p>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Focus on 1–2 winning arguments.</li>
-        <li>Make strategic choices that help the 1NR later.</li>
-      </ul>
-    `,
-    "Style & Strategy Tips": `
-      <ul class="list-decimal pl-5 space-y-1">
-        <li>Explain key impacts clearly.</li>
-        <li>Use weighing comparisons.</li>
-      </ul>
-    `,
-    "Reminders & Common Mistakes": `
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Don’t rehash the entire 1NC word-for-word.</li>
-      </ul>
-    `
-  },
-  "CX4": {
-    "Core Responsibilities": `
-      <p class="mb-2">Cross-ex of the 2NC focuses on their block strategy and missing answers.</p>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Test consistency between 2NC and 1NR strategy.</li>
-        <li>Push for concessions on their disads or counterplans.</li>
-      </ul>
-    `,
-    "Style & Strategy Tips": `
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Stay calm under pressure.</li>
-      </ul>
-    `,
-    "Reminders & Common Mistakes": `
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Don’t get distracted by irrelevant side arguments.</li>
-      </ul>
-    `
-  },
-  "1NR": {
-    "Core Responsibilities": `
-      <p class="mb-2">The 1NR finishes the negative block, cleaning up arguments and covering positions left from the 2NC.</p>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Focus on covering the remaining off-case.</li>
-        <li>Set up the 2NR to win the debate.</li>
-      </ul>
-    `,
-    "Style & Strategy Tips": `
-      <ul class="list-decimal pl-5 space-y-1">
-        <li>Sound confident and steady.</li>
-      </ul>
-    `,
-    "Reminders & Common Mistakes": `
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Don’t contradict the 2NC strategy.</li>
-      </ul>
-    `
-  },
-  "1AR": {
-    "Core Responsibilities": `
-      <p class="mb-2">The 1AR answers the entire negative block in just 5 minutes — a tough speech!</p>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Answer every argument extended by the 2NC and 1NR.</li>
-        <li>Prioritize your best offense.</li>
-      </ul>
-    `,
-    "Style & Strategy Tips": `
-      <ul class="list-decimal pl-5 space-y-1">
-        <li>Group arguments.</li>
-        <li>Use fast signposting and transitions.</li>
-      </ul>
-    `,
-    "Reminders & Common Mistakes": `
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Don’t leave any argument unanswered.</li>
-      </ul>
-    `
-  },
-  "2NR": {
-    "Core Responsibilities": `
-      <p class="mb-2">The 2NR is the last negative speech, focusing on closing the debate.</p>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Collapse on 1–2 winning arguments.</li>
-        <li>Explain to the judge why the neg wins.</li>
-      </ul>
-    `,
-    "Style & Strategy Tips": `
-      <ul class="list-decimal pl-5 space-y-1">
-        <li>Sound confident and finish strong.</li>
-        <li>Use judge-friendly language.</li>
-      </ul>
-    `,
-    "Reminders & Common Mistakes": `
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Don’t add brand new arguments.</li>
-      </ul>
-    `
-  },
-  "2AR": {
-    "Core Responsibilities": `
-      <p class="mb-2">The 2AR closes out for the affirmative, responding to the 2NR and giving final reasons to vote aff.</p>
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Defend your best impacts.</li>
-        <li>Compare why the aff world is better.</li>
-      </ul>
-    `,
-    "Style & Strategy Tips": `
-      <ul class="list-decimal pl-5 space-y-1">
-        <li>Use weighing and impact calculus.</li>
-        <li>Finish with a confident tone.</li>
-      </ul>
-    `,
-    "Reminders & Common Mistakes": `
-      <ul class="list-disc pl-5 space-y-1">
-        <li>Don’t spread too fast for the judge to track.</li>
-      </ul>
-    `
+  "Judge": {
+    "1AC": {
+      "Core Responsibilities": `
+        <p class="mb-2">Observe the clarity, structure, and organization of the 1AC.</p>
+        <ul class="list-disc pl-5">
+          <li>Check if they establish all stock issues.</li>
+        </ul>`,
+      "Style & Strategy Tips": `
+        <ul class="list-decimal pl-5">
+          <li>Take careful notes on claims and evidence.</li>
+        </ul>`,
+      "Reminders & Common Mistakes": `
+        <ul class="list-disc pl-5">
+          <li>Do not intervene — evaluate based on argumentation only.</li>
+        </ul>`
+    }
   }
 };
+

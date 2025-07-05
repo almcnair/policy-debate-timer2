@@ -9,9 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const respToggle = document.getElementById('responsibilities-toggle');
   const respPanel = document.getElementById('responsibilities-panel');
   const closeBtn = document.getElementById('close-responsibilities');
-    document.getElementById('responsibilities-list').innerHTML = `
-      <li class="text-white p-4">Click a speech to start the debate.</li>
-    `;
   const speechButtons = Array.from(document.querySelectorAll('.speech-btn'));
   const startBtn = document.getElementById('start-btn');
   const mainTimer = document.getElementById('main-timer');
@@ -116,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const button = speechButtons.find(btn => btn.dataset.label === label);
     if (button) {
       button.classList.add('opacity-50', 'cursor-not-allowed', 'line-through');
-      // keep clickable, do not disable
     }
     alarmAudio.play();
     const nextIndex = currentSpeechIndex + 1;
@@ -151,14 +147,35 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateResponsibilitiesPanel(speech) {
     const panel = document.getElementById('responsibilities-list');
     panel.innerHTML = '';
-    const data = responsibilitiesData[speech];
+    const data = responsibilitiesData[selectedRole]?.[speech];
     if (!data) {
       panel.innerHTML = '<li>No responsibilities found for this speech.</li>';
       return;
     }
     for (const [category, content] of Object.entries(data)) {
       const item = document.createElement('li');
-      item.innerHTML = `<h2 class="text-xl font-serif text-cyan-400 mb-2">${category}</h2>${content}<br><br>`;
+      if (category === "Stock Issues") {
+        item.innerHTML = `
+          <h2 class="text-xl font-serif text-cyan-400 mb-2 flex items-center justify-between">
+            <button id="stock-toggle" aria-expanded="false" aria-controls="stock-issues-content"
+              class="flex items-center space-x-1 focus:ring-2 focus:ring-cyan-400 rounded">
+              <span>Stock Issues</span>
+              <svg id="stock-icon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transform transition-transform"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+          </h2>
+          <div id="stock-issues-content" class="hidden transition-all duration-300 ease-in-out">
+            ${content}
+          </div>
+        `;
+      } else {
+        item.innerHTML = `
+          <h2 class="text-xl font-serif text-cyan-400 mb-2">${category}</h2>
+          ${content}<br><br>
+        `;
+      }
       panel.appendChild(item);
     }
   }
@@ -282,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
     modalBackdrop.style.display = 'none';
 
     divisionDisplay.textContent = `${level === 'middle' ? 'Middle School' : 'High School'} | ${selectedRole}`;
-      divisionDisplay.className = 'fixed top-14 left-2 text-sm text-white bg-gray-700 px-2 py-1 rounded cursor-pointer z-50';
+    divisionDisplay.className = 'fixed top-14 left-2 text-sm text-white bg-gray-700 px-2 py-1 rounded cursor-pointer z-50';
     divisionDisplay.onclick = () => {
       if (isSpeechRunning) {
         if (!confirm('Do you want to stop your current speech timer?')) return;
@@ -310,6 +327,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!respPanel.contains(e.target) && !respToggle.contains(e.target)) {
       respPanel.classList.add('translate-x-full');
       respToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    const toggleButton = e.target.closest("#stock-toggle");
+    if (toggleButton) {
+      const content = document.getElementById("stock-issues-content");
+      const icon = document.getElementById("stock-icon");
+      const isExpanded = toggleButton.getAttribute("aria-expanded") === "true";
+      toggleButton.setAttribute("aria-expanded", String(!isExpanded));
+      content.classList.toggle("hidden");
+      icon.classList.toggle("rotate-180");
     }
   });
 
