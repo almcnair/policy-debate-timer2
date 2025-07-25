@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Policy Debate Jeopardy</title>
+  <!-- Tailwind CSS via CDN. The timers app uses Tailwind so this matches the existing style and keeps the file lightweight. -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* hide scrollbars in embedded contexts */
+    body { -ms-overflow-style: none; scrollbar-width: none; }
+    body::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center p-4">
+  <h1 class="text-3xl font-serif text-cyan-400 mb-6 text-center">Policy Debate Jeopardy</h1>
+  <!-- Game board -->
+  <div id="board" class="w-full max-w-screen-lg grid grid-cols-5 gap-1">
+    <!-- The board will be populated by JavaScript -->
+  </div>
+
+  <!-- Modal for questions/answers -->
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-70 hidden items-center justify-center px-4" role="dialog" aria-modal="true" aria-labelledby="questionHeading">
+    <div class="bg-slate-800 rounded-lg w-full max-w-lg p-6 relative">
+      <h2 id="questionHeading" class="text-xl font-serif text-cyan-400 mb-4"></h2>
+      <p id="questionText" class="mb-4 text-base leading-relaxed"></p>
+      <button id="showAnswerBtn" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-green-400" aria-controls="answerText">Show Answer</button>
+      <p id="answerText" class="hidden mb-4 text-base leading-relaxed"></p>
+      <button id="closeBtn" class="bg-yellow-600 hover:bg-yellow-700 text-black font-semibold px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // Data definition for categories, colors, questions and answers.
+    // Colors correspond to Coach Austin's brand palette: blue for basics, yellow for speech order, purple for stock issues,
+    // green for strategies, and cyan for practice & flowing. These classes come from Tailwind.
+    const categories = [
+      {
+        name: "Policy Debate Basics",
+        color: "bg-blue-500",
+        questions: [
+          {
+            points: 100,
+            question: "How many debaters are on each team in policy debate?",
+            answer: "Policy debate is a two‑on‑two game, so each team has two debaters."
+          },
+          {
+            points: 200,
+            question: "In policy debate, what is the affirmative team’s job?",
+            answer: "The affirmative team proposes and supports a plan that changes government policy to address a problem and supports the resolution."
+          },
+          {
+            points: 300,
+            question: "What is the negative team’s job?",
+            answer: "The negative team argues against the affirmative plan, showing it is ineffective or problematic and defending the status quo or offering alternatives."
+          },
+          {
+            points: 400,
+            question: "Who decides which team wins a debate round?",
+            answer: "A judge (or panel of judges) determines the winner based on the arguments presented."
+          },
+          {
+            points: 500,
+            question: "What term refers to the nationwide topic that every team debates throughout the season?",
+            answer: "The resolution or topic of the year."
+          }
+        ]
+      },
+      {
+        name: "Speech Order & Timing",
+        color: "bg-yellow-600",
+        questions: [
+          {
+            points: 100,
+            question: "How long are constructive speeches in middle school policy debate?",
+            answer: "Constructive speeches are five minutes long for middle schoolers."
+          },
+          {
+            points: 200,
+            question: "How long are rebuttal speeches in middle school policy debate?",
+            answer: "Rebuttal speeches are three minutes long for middle schoolers."
+          },
+          {
+            points: 300,
+            question: "What is the first speech in a policy debate called?",
+            answer: "The first speech is the First Affirmative Constructive (1AC)."
+          },
+          {
+            points: 400,
+            question: "Which speech is delivered last in a debate round?",
+            answer: "The Second Affirmative Rebuttal (2AR) is delivered last."
+          },
+          {
+            points: 500,
+            question: "In policy debate, which side speaks first and which side speaks last?",
+            answer: "The affirmative speaks first with the 1AC and also speaks last with the 2AR."
+          }
+        ]
+      },
+      {
+        name: "Stock Issues",
+        color: "bg-purple-500",
+        questions: [
+          {
+            points: 100,
+            question: "Which stock issue asks why a problem is important and why we should care?",
+            answer: "Significance."
+          },
+          {
+            points: 200,
+            question: "Which stock issue identifies the problems or shortcomings of the status quo?",
+            answer: "Harms."
+          },
+          {
+            points: 300,
+            question: "Which stock issue deals with the current situation and causes of the status quo?",
+            answer: "Inherency."
+          },
+          {
+            points: 400,
+            question: "Which stock issue asks whether the affirmative’s plan falls within the wording of the resolution?",
+            answer: "Topicality."
+          },
+          {
+            points: 500,
+            question: "Which stock issue explains how the plan solves the problem and produces benefits?",
+            answer: "Solvency."
+          }
+        ]
+      },
+      {
+        name: "Strategies",
+        color: "bg-green-600",
+        questions: [
+          {
+            points: 100,
+            question: "What are the three parts of a typical piece of evidence in policy debate?",
+            answer: "Tagline, citation, and the text of the evidence."
+          },
+          {
+            points: 200,
+            question: "When reading evidence, should you paraphrase or read the text verbatim?",
+            answer: "Read the evidence verbatim and highlight or underline the important lines."
+          },
+          {
+            points: 300,
+            question: "What is a disadvantage?",
+            answer: "A negative off‑case argument that explains a harm or problem that will occur if the affirmative plan is adopted."
+          },
+          {
+            points: 400,
+            question: "What is a counterplan?",
+            answer: "A competitive, non‑topical, mutually exclusive plan offered by the negative as an alternative to the affirmative plan."
+          },
+          {
+            points: 500,
+            question: "What does 'fiat' mean in policy debate?",
+            answer: "It refers to assuming the plan can be implemented as proposed without worrying about real‑world political feasibility."
+          }
+        ]
+      },
+      {
+        name: "Practice & Flowing",
+        color: "bg-cyan-500",
+        questions: [
+          {
+            points: 100,
+            question: "What is the practice of recording arguments during a debate to keep track of the speeches called?",
+            answer: "Flowing (using a flow)."
+          },
+          {
+            points: 200,
+            question: "Why should you practice reading your case out loud with a stopwatch before debates?",
+            answer: "To ensure you can read your case within the time limit and improve enunciation and pronunciation."
+          },
+          {
+            points: 300,
+            question: "In policy debate research, what are 'cards'?",
+            answer: "Pieces of evidence that include the tagline, citation, and the text of the evidence."
+          },
+          {
+            points: 400,
+            question: "When flowing, how might debaters use different colors?",
+            answer: "They may write affirmative arguments in one color and negative arguments in another color to keep track of each side."
+          },
+          {
+            points: 500,
+            question: "Name one tip for your first tournament performance in policy debate.",
+            answer: "Approach rounds with confidence, ask judges about their preferences, keep your flows for feedback, and review your performance after each round."
+          }
+        ]
+      }
+    ];
+
+    // Populate the board
+    const board = document.getElementById('board');
+    // First row: category headers
+    categories.forEach((cat) => {
+      const header = document.createElement('div');
+      header.className = `${cat.color} text-center font-semibold p-2 border border-slate-800`;
+      header.textContent = cat.name;
+      board.appendChild(header);
+    });
+    // Create cells for each point value
+    for (let row = 0; row < categories[0].questions.length; row++) {
+      categories.forEach((cat, cIndex) => {
+        const cell = document.createElement('button');
+        // Each cell uses the category background color. Focus rings use a unified cyan accent for accessibility.
+        cell.className = `${cat.color} text-center py-6 font-bold border border-slate-800 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2`;
+        cell.textContent = cat.questions[row].points;
+        cell.setAttribute('data-cat', cIndex);
+        cell.setAttribute('data-row', row);
+        cell.setAttribute('aria-label', `${cat.name} for ${cat.questions[row].points} points`);
+        cell.addEventListener('click', handleCellClick);
+        board.appendChild(cell);
+      });
+    }
+
+    // Modal elements
+    const modal = document.getElementById('modal');
+    const questionHeading = document.getElementById('questionHeading');
+    const questionText = document.getElementById('questionText');
+    const answerText = document.getElementById('answerText');
+    const showAnswerBtn = document.getElementById('showAnswerBtn');
+    const closeBtn = document.getElementById('closeBtn');
+
+    let currentQuestion = null;
+
+    function handleCellClick(event) {
+      const btn = event.currentTarget;
+      const catIndex = parseInt(btn.getAttribute('data-cat'));
+      const qIndex = parseInt(btn.getAttribute('data-row'));
+      currentQuestion = categories[catIndex].questions[qIndex];
+      questionHeading.textContent = `${categories[catIndex].name} – ${currentQuestion.points} pts`;
+      questionText.textContent = currentQuestion.question;
+      answerText.textContent = currentQuestion.answer;
+      answerText.classList.add('hidden');
+      showAnswerBtn.classList.remove('hidden');
+      modal.classList.remove('hidden');
+      // Mark cell as used
+      btn.disabled = true;
+      btn.classList.add('opacity-50', 'cursor-not-allowed');
+    }
+    // Show answer
+    showAnswerBtn.addEventListener('click', () => {
+      answerText.classList.remove('hidden');
+      showAnswerBtn.classList.add('hidden');
+    });
+    // Close modal
+    closeBtn.addEventListener('click', () => {
+      modal.classList.add('hidden');
+    });
+    // Close modal when clicking outside the dialog content
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
